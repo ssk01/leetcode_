@@ -28,6 +28,112 @@ struct ListNode {
 
 };
 
+
+string longestPalindrome(string s) {
+	int length = s.length();
+	//int start = 0; 
+	int left = 0;
+	int right = 0;
+	int maxLen = 0;
+	int maxLeft = 0;
+	for (int start = 0; start<length && length - start > maxLen / 2; )
+	{
+		left = right = start;
+		while (right < length - 1 && s[right] == s[right + 1])
+		{
+			right++;
+		}
+		start = right + 1;
+		while (left>0 && right <length -1 && s[left-1] == s[right+1])
+		{
+			left--;
+			right++;
+		}
+		if (maxLen < right - left + 1) {
+			maxLeft = left;
+			maxLen = right - left + 1;
+		}
+	}
+	return s.substr(maxLeft,maxLen);
+}
+
+int lengthOfLongestSubstring(string s) {
+	vector<int> vec(256, -1);
+	int length = s.length();
+	int m = 0;
+	int res = 0;
+	for (int i = 0; i<length; i++)
+	{
+		m = max(m, vec[s[i]] + 1);
+		vec[s[i]] = i;
+		res = max(res, i - m + 1);
+	}
+	return res;
+}
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+	ListNode *tmp = new ListNode(0);
+	auto res = tmp;
+	int a = 0;
+	int b = 0;
+	while (l1 != NULL&&l2 != NULL)
+	{
+		res->next = new ListNode(0);
+		res = res->next;
+		a = l1->val + l2->val;
+		l1 = l1->next;
+		l2 = l2->next;
+		res->val = (a + b) % 10;
+		b = (a + b) / 10;
+	}
+	if (l1 != NULL)
+	{
+		l2 = l1;
+	}
+	while (l2 != NULL)
+	{
+		res->next = new ListNode(0);
+		res = res->next;
+		a = l2->val;
+		l2 = l2->next;
+		res->val = (a + b) % 10;
+		b = (a + b) / 10;
+	}
+	if (b != 0)
+	{
+
+		res->next = new ListNode(0);
+		res = res->next;
+		res->val = b;
+	}
+	res = tmp->next;
+	delete tmp;
+	return res;
+}
+
+vector<int> twoSum(vector<int>& nums, int target) {
+	unordered_map<int, int> maps;
+	int size = nums.size();
+
+	vector<int> res;
+
+	for (int i = 0; i < size; ++i)
+	{
+		if (maps.find(target - nums[i]) != maps.end())
+		{
+		    res.push_back(maps[target - nums[i]]);
+		    res.push_back(i);
+		    return res;
+		}
+		maps.emplace(nums[i], i);
+	}
+	return res;
+}
+
+
+
+
+
+
 template <typename RandAccessIterator>
 int findKth(RandAccessIterator first1, RandAccessIterator last1, RandAccessIterator first2, RandAccessIterator last2,int k)
 {
