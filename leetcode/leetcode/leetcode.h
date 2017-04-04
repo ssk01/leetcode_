@@ -29,6 +29,23 @@ struct ListNode {
 };
 
 
+int reverse(int x) {
+	int a = 0;
+	int res = 0;
+	do
+	{
+		a = x % 10 + res * 10;
+		if (a / 10 == res)
+			res = a;
+		else
+		{
+			return 0;
+		}
+		x = x / 10;
+	} while (x);
+	return res;
+}
+
 string longestPalindrome(string s) {
 	int length = s.length();
 	//int start = 0; 
