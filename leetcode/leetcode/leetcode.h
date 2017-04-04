@@ -28,6 +28,155 @@ struct ListNode {
 
 };
 
+template <typename RandAccessIterator>
+int findKth(RandAccessIterator first1, RandAccessIterator last1, RandAccessIterator first2, RandAccessIterator last2,int k)
+{
+	int size1 = last1 - first1;
+	int size2 = last2 - first2;
+	if (size1 + size2 < k)
+	{
+		cout << "nmb" << endl;
+		return -9527;
+	}
+	if (size1 == 0) { return *(first2 + k - 1); }
+	if (size2 == 0) { return *(first1 + k - 1); }
+	
+	if (k == 1)
+	{
+		return ((*first1) < (*first2)) ? (*first1) : (*first2);
+	}
+	if (size1 > size2) { return findKth(first2, last2, first1, last1, k); }
+	int len1 = k/2;
+	int len2 = k-k/2;
+	if (size1 < k / 2) { len1 = size1; len2 = k - size1; };
+	
+	if (*(first1 + len1-1) > *(first2 + len2-1))
+	{
+		return findKth(first1,  last1 , first2 + len2, last2, len1);
+	}
+	else if (*(first1 + len1 - 1) < *(first2 + len2 - 1))
+	{
+		return findKth(first1 + len1, last1 , first2, last2, len2);
+	}
+	else
+	{
+		return *(first1 + len1 - 1);
+	}
+
+	//if (size1 < k / 2+1)
+	//{
+	//	if (*(first1 + size1 - 1) <= *(first2 + k - size1 - 1))
+	//	{
+	//		return *(first2 + k - size1 - 1);
+	//	}
+	//	else
+	//	{
+	//		return findKth(first1, last1, first2 + k - size1 , last2, size1);
+	//	}
+	//}
+	//if (size2 < k / 2+1)
+	//{
+	//	if (*(first1 +k - size2 - 1) >= *(first2 +  size2 - 1))
+	//	{
+	//		return *(first1 + k - size2 - 1);
+	//	}
+	//	else
+	//	{
+	//		return findKth(first1+k-size2, last1, first2 , last2, size2);
+	//	}
+	//}
+	//if (*(first1 + (k / 2 - 1)) > *(first2 + (k - k / 2 - 1)))
+	//{
+	//	return findKth(first1, last1, first2 +( k - k / 2), last2, k - (k - k / 2));
+	//}
+	//else if (*(first1 + (k / 2 - 1)) < *(first2 + (k - k / 2 - 1)))
+	//{
+	//	return findKth(first1 + k / 2, last1, first2, last2, k - k / 2);
+	//}
+	//else
+	//{
+	//	return *(first1 + k / 2 - 1);
+	//}
+}
+
+
+double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+	int size1 = nums1.size();
+	int size2 = nums2.size();
+	if (size1 > size2) { return findMedianSortedArrays(nums2, nums1); }
+	if (size1 == 0)
+	{
+		return (nums2[(size2 + 1-1) / 2] + nums2[(size2-1) / 2])/2.0;
+	}
+	int len = size1 + size2;
+	int i = 1; int j = len/2 - i;
+	if (nums1[i - 1] > nums2[j])
+	{
+		i--;
+		j = len / 2 - i;
+	}
+	while ((i>0) &&(i<size1)&& !(nums1[i - 1] <= nums2[j] && nums2[j - 1] <= nums1[i]))
+	{
+		if (nums1[i - 1] > nums2[j])
+		{
+			i--;
+			j = len / 2 - i;
+		}
+		else if (nums2[j - 1] > nums1[i])
+		{
+			i++;
+			j = len / 2 - i;
+		}
+	}
+	int left = 0;
+	int right = 0;
+	
+	if (i == 0)
+	{
+		if (len % 2 == 0)
+		{
+			left = nums2[j-1];
+			if (j != size2)
+				right = (nums2[j] < nums1[i]) ? nums2[j] : nums1[i];
+			else
+				right = nums1[i];
+		}
+		else
+		{
+			left = right = (nums2[j] < nums1[i]) ? nums2[j ] : nums1[i];
+		}
+	}
+	else if (i == size1)
+	{
+		if (len % 2 == 0)
+		{
+			
+			right = nums2[j];
+
+			if (j!=0)
+				left = (nums2[j - 1] > nums1[i - 1]) ? nums2[j - 1] : nums1[i];
+			else
+			{
+				left = nums1[i - 1];
+			}
+		}
+		else
+		{
+			left = right =  nums2[j] ;
+		}
+	}
+	else
+	{
+		if (len%2 == 1)
+		left = right = (nums2[j] < nums1[i]) ? nums2[j] : nums1[i];
+		else
+		{
+			left = (nums2[j - 1] > nums1[i - 1]) ? nums2[j - 1] : nums1[i-1];
+			 right = (nums2[j] < nums1[i]) ? nums2[j] : nums1[i];
+		}
+	}
+	return (left + right) / 2.0;
+}
 
 //506
 //
