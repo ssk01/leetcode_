@@ -13,6 +13,39 @@
 #include <unordered_set>
 using namespace std;
 
+
+
+struct TreeNode {
+	int val;
+	TreeNode *left;
+	TreeNode *right;
+	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+struct ListNode {
+	int val;
+	ListNode *next;
+	ListNode(int x) : val(x), next(NULL) {}
+
+};
+
+int maxArea(vector<int>& height) {
+	int length = height.size();
+	int i = 0; 
+	int j = length - 1;
+	int h=0;
+	int water = 0;
+	while (i < j)
+	{
+		h = min(height[i], height[j]);
+		water = max(water, h*(i - j + 1));
+		while (height[i] <= h &&i<j) { i++; }
+		while (height[j] <= h &&i<j) { j--; }
+	}
+	return water;
+}
+
+
 bool isMatch(string s, string p) {
 	/**
 	* f[i][j]: if s[0..i-1] matches p[0..j-1]
@@ -34,7 +67,7 @@ bool isMatch(string s, string p) {
 	}
 	for (int j = 1; j <= n; j++)
 	{
-		f[0][j] = j>1 &&(p[j - 1] == '*' && f[0][j - 2]);
+		f[0][j] = j>1 && (p[j - 1] == '*' && f[0][j - 2]);
 	}
 	for (int i = 1; i <= m; i++)
 	{
@@ -54,6 +87,29 @@ bool isMatch(string s, string p) {
 }
 
 
+int myAtoi(string str) {
+	int i = 0;
+	int sign = 1;
+	long result = 0;
+	if (!str.empty())
+	{
+		i = str.find_first_not_of(' ');
+		if (str[i] == '+' || str[i] == '-')
+		{
+			sign = (str[i++] == '-') ? -1 : 1;
+		}
+		while (str[i] <= '9' &&str[i] >= '0')
+		{
+			result = 10 * result + (str[i++] - '0');
+			if (result*sign >= INT_MAX) return INT_MAX;
+			if (result*sign <= INT_MIN) return INT_MIN;
+
+		}
+		return result*sign;
+	}
+	return 0;
+}
+
 //bool isMatch(string s, string p)
 //{
 //	// x* matches empty string or at least one character: x* -> xx*
@@ -70,7 +126,7 @@ bool isMatch(string s, string p) {
 //}
 
 bool isPalindrome(int x) {
-	if (x < 0||(x!=0 && x%10==0))
+	if (x < 0 || (x != 0 && x % 10 == 0))
 		return false;
 	int sum = 0;
 	do
@@ -81,22 +137,6 @@ bool isPalindrome(int x) {
 
 	return (x == sum) || (x == sum / 10);
 }
-
-struct TreeNode {
-	int val;
-	TreeNode *left;
-	TreeNode *right;
-	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
-
-struct ListNode {
-	int val;
-	ListNode *next;
-	ListNode(int x) : val(x), next(NULL) {}
-
-};
-
-
 int reverse(int x) {
 	int a = 0;
 	int res = 0;
