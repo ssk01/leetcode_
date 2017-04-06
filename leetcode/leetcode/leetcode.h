@@ -29,6 +29,64 @@ struct ListNode {
 
 };
 
+int removeElement(vector<int>& nums, int val) {
+	int size = nums.size();
+	int j = size;
+	int k = 0;
+	for (int i = 0; i < nums.size(); i++)
+	{
+		if (nums[i] == val)
+		{
+			for (k = i + 1; k<size+1; k++)
+			{
+				 
+				if (j == size)
+				{
+					j = i;
+				}
+				if (k<size&&nums[k] != val)
+				{
+					std::swap(nums[j], nums[k]); 
+					j++;
+				}
+				
+			}
+			break;
+		}
+	}
+
+	return  j;
+}
+
+ListNode* swapPairs(ListNode* head) {
+	auto tmp = head;//0
+	auto another_begin = head;//2
+	auto next = head;//1
+	auto res = head;//result
+	if (tmp != NULL && tmp->next != NULL)
+	{
+		res = tmp->next;
+	}
+	while (tmp != NULL && tmp->next != NULL)
+	{
+		next = tmp->next;
+		another_begin = next->next;
+		if (another_begin != NULL && another_begin->next != NULL)
+		{
+			tmp->next = another_begin->next;
+
+		}
+		else
+		{
+			tmp->next = another_begin;
+
+		}
+		next->next = tmp;
+		tmp = another_begin;
+	}
+	return res;
+
+}
 void addPar(vector<string>& res,string str, int n, int m)
 {
 	if (n == 0 && m == 0)
