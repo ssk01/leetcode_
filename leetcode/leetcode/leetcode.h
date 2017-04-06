@@ -29,6 +29,25 @@ struct ListNode {
 
 };
 
+void addPar(vector<string>& res,string str, int n, int m)
+{
+	if (n == 0 && m == 0)
+	{
+		res.push_back(str);
+		return;
+	}
+	if (n > 0) addPar(res, str + '(', n - 1, m + 1);
+	if (m < 0) addPar(res, str + ')', n, m - 1);
+
+}
+
+vector<string> generateParenthesis(int n) {
+	vector<string> res;
+	addPar(res, "", n, 0);
+	return res;
+}
+
+
 int maxArea(vector<int>& height) {
 	int length = height.size();
 	int i = 0; 
