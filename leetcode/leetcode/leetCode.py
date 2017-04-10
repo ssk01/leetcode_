@@ -1,4 +1,45 @@
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+
+
 class Solution(object):
+    def rotate(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: void Do not return anything, modify matrix in-place instead.
+        """
+        n =len(matrix)
+        if n == 0:
+            return
+        
+        for i in range((n)/2):
+            for j in range((n+1)/2):
+                # tmp = matrix[i][j]
+                # matrix[i][j] = matrix[n-j-1][i]
+                # matrix[n-j-1][i] = matrix[n-i-1][n-j-1]
+                # matrix[n-i-1][n-j-1] = matrix[j][n-i-1]
+                # matrix[j][n-i-1]=tmp
+                matrix[i][j], matrix[n-j-1][i] , matrix[n-i-1][n-j-1],matrix[j][n-i-1]=
+                 matrix[n-j-1][i] , matrix[n-i-1][n-j-1],matrix[j][n-i-1],matrix[i][j]
+
+
+
+    def mergeTwoLists(self, l1, l2):
+        """
+        :type l1: ListNode
+        :type l2: ListNode
+        :rtype: ListNode
+        """
+        if l1 and l2 and l1.val>l2.val:
+            l1,l2 = l2,l1
+        if l1:
+            l1.next = self.mergeTwoLists(l1.next,l2)
+        return l1 or l2
+
     def letterCombinations(self, digits):
         """
         :type digits: str
@@ -76,6 +117,8 @@ class Solution(object):
 
 
 a = Solution()
-print a.permute([1,2,3])
+b=[[1,2,3],[4,5,6],[7,8,9]]
+a.rotate(b)
+print b
 # print a.myPow(8.88023, 3)
 print " das "
