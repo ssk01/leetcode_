@@ -7,6 +7,42 @@
 
 
 class Solution(object):
+    
+    def searchInsert(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: int
+        """
+        if len(nums) == 0:
+            return 0
+        else:
+            res  = len(nums)
+            for i in range(len(nums)):
+                if nums[i]>=target:
+                    res = i
+                    break
+            return res 
+
+    def removeDuplicates(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if len(nums)<=1:
+            return len(nums)
+        
+        idx = 1
+
+        for i in range(1,len(nums)):
+            if (nums[i]!=nums[i-1]):
+                nums[idx] = nums[i]
+                idx+=1
+        return idx
+                
+                
+
+
     def rotate(self, matrix):
         """
         :type matrix: List[List[int]]
@@ -23,9 +59,7 @@ class Solution(object):
                 # matrix[n-j-1][i] = matrix[n-i-1][n-j-1]
                 # matrix[n-i-1][n-j-1] = matrix[j][n-i-1]
                 # matrix[j][n-i-1]=tmp
-                matrix[i][j], matrix[n-j-1][i] , matrix[n-i-1][n-j-1],matrix[j][n-i-1]=
-                 matrix[n-j-1][i] , matrix[n-i-1][n-j-1],matrix[j][n-i-1],matrix[i][j]
-
+                matrix[i][j], matrix[n-j-1][i] , matrix[n-i-1][n-j-1],matrix[j][n-i-1]=matrix[n-j-1][i] , matrix[n-i-1][n-j-1],matrix[j][n-i-1],matrix[i][j]
 
 
     def mergeTwoLists(self, l1, l2):
@@ -117,8 +151,11 @@ class Solution(object):
 
 
 a = Solution()
-b=[[1,2,3],[4,5,6],[7,8,9]]
-a.rotate(b)
+# b=[[1,2,3],[4,5,6],[7,8,9]]
+# a.rotate(b)
+# print b
+# # print a.myPow(8.88023, 3)
+# print " das "
+b=[1,2,2,2,3,3]
+print a.removeDuplicates(b)
 print b
-# print a.myPow(8.88023, 3)
-print " das "
