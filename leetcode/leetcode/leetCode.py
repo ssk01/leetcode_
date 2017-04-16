@@ -7,7 +7,22 @@
 
 
 class Solution(object):
-    
+    def groupAnagrams(self, strs):
+        """
+        :type strs: List[str]
+        :rtype: List[List[str]]
+        """
+        dic ={}
+        for str in strs:
+            s = ''.join(sorted(str))
+
+            if s in dic:
+                dic.get(s).append(str)
+            else:
+                dic[s] = [str]
+        return dic.values()
+             
+            
     def searchInsert(self, nums, target):
         """
         :type nums: List[int]
@@ -156,6 +171,7 @@ a = Solution()
 # print b
 # # print a.myPow(8.88023, 3)
 # print " das "
-b=[1,2,2,2,3,3]
-print a.removeDuplicates(b)
-print b
+# b=[1,2,2,2,3,3]
+# print a.removeDuplicates(b)
+# print b
+print a.groupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"])
