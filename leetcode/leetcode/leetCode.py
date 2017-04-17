@@ -7,6 +7,35 @@
 
 
 class Solution(object):
+    def search(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: int
+        """
+        if len(nums)==0:
+            return -1
+        low, high = 0,len(nums)-1
+        mid = (low+high)/2
+        
+        while low <mid:
+            if nums[low] < nums[mid] and nums[low]<=target and target <= nums[mid]:
+                high = mid
+            elif nums[low]> nums[mid] and (nums[low]<=target or target<=nums[mid]):
+                high = mid
+            else:
+                low = mid+1
+            mid = (low+high)/2
+                
+        if nums[low]==target:
+            return low
+        elif low+1<len(nums)and nums[low+1] == target:
+            return low+1
+        else:
+            return -1
+        
+            
+
     def groupAnagrams(self, strs):
         """
         :type strs: List[str]
@@ -174,4 +203,4 @@ a = Solution()
 # b=[1,2,2,2,3,3]
 # print a.removeDuplicates(b)
 # print b
-print a.groupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"])
+print a.search([1,3,5],1)
