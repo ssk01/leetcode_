@@ -7,6 +7,43 @@
 
 
 class Solution(object):
+    
+    def kmpPre(self, needle):
+            nextlist = [0 for x in len(needle)]
+            k = 0
+            for i in range(1,len(needle)):
+                while k > 0 and needle[i] != needle[k]:
+                    k = nextlist[k-1]
+                if needle[i] == needle[k]:
+                    k=k+1
+                nextlist[i]=k
+            return nextlist
+        
+    def strStr(self, haystack, needle):
+        """
+        :type haystack: str
+        :type needle: str
+        :rtype: int
+        """
+        if len(needle) == 0:
+            
+            return 0
+        
+        nextlist = self.kmpPre(needle)
+
+        k = 0
+        for i in range(0, len(haystack)):
+            while k > 0 and haystack[i] != needle[k]:
+                k = nextlist[k-1]
+
+            if haystack[i] == needle[k]:
+                k=k+1
+            if k == len(needle) :
+                return i-k+1
+        return -1
+
+
+
     def search(self, nums, target):
         """
         :type nums: List[int]
@@ -203,4 +240,5 @@ a = Solution()
 # b=[1,2,2,2,3,3]
 # print a.removeDuplicates(b)
 # print b
-print a.search([1,3,5],1)
+print a.strStr("w","w")
+print a.strStr("mississippi","issip")
