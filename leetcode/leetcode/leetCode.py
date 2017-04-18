@@ -5,8 +5,37 @@
 #         self.next = None
 
 
-
 class Solution(object):
+    def permuteUnique(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        ans =[[]]
+        for n in nums:
+            ans =[ l[:i] + [n]+l[i:]
+                for l in ans
+                for i in xrange((l+[n]).index(n) + 1 )]
+        return ans
+        # return reduce(lambda a,n:[l[:i]+[n]+l[i:]for l in a for i in xrange((l+[n]).index(n)+1)],nums,[[]])
+
+
+    def trap(self, height):
+        """
+        :type height: List[int]
+        :rtype: int
+        """
+        n = len(height)
+        left,right,water,minheight = 0,n-1,0,0
+        while left < right:
+            while left <right and height[left]<= minheight:
+                water += minheight - height[left]
+                left +=1
+            while right >left and height[right] <= minheight:
+                water += minheight - height[right]
+                right -=1
+            minheight = min(height[left], height[right])
+        return water
     
     def kmpPre(self, needle):
             nextlist = [0 for x in len(needle)]
@@ -232,6 +261,7 @@ class Solution(object):
 
 
 a = Solution()
+print a.permuteUnique([1,1,2])
 # b=[[1,2,3],[4,5,6],[7,8,9]]
 # a.rotate(b)
 # print b
@@ -240,5 +270,5 @@ a = Solution()
 # b=[1,2,2,2,3,3]
 # print a.removeDuplicates(b)
 # print b
-print a.strStr("w","w")
-print a.strStr("mississippi","issip")
+# print a.strStr("w","w")
+# print a.strStr("mississippi","issip")
