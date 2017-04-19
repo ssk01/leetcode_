@@ -6,6 +6,26 @@
 
 
 class Solution(object):
+    def convertToBase7(self, num):
+        """
+        :type num: int
+        :rtype: str
+        """
+        lists=""
+        pos =True
+        if num == 0:
+            return "0"
+        if num <0:
+            pos =False
+            num = -num
+        while num >0:
+            a=num%7
+            num/=7
+            lists=str(a)+lists
+        if not pos:
+            lists='-'+lists
+        return lists
+
     def permuteUnique(self, nums):
         """
         :type nums: List[int]
@@ -261,7 +281,14 @@ class Solution(object):
 
 
 a = Solution()
-print a.permuteUnique([1,1,2])
+print a.convertToBase7(0)
+print a.convertToBase7(7)
+print a.convertToBase7(3)
+print a.convertToBase7(11)
+print a.convertToBase7(-1)
+print a.convertToBase7(-7)
+print a.convertToBase7(-15)
+
 # b=[[1,2,3],[4,5,6],[7,8,9]]
 # a.rotate(b)
 # print b
