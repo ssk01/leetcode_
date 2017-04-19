@@ -6,6 +6,66 @@
 
 
 class Solution(object):
+    def containsNearbyAlmostDuplicate(self, nums, k, t):
+        ind = sorted(range(len(nums)), key = lambda x: nums[x])
+        for i in range(len(nums)-1):
+            j = i + 1
+            while j < len(nums) and nums[ind[j]] - nums[ind[i]] <= t:
+                if abs(ind[i]-ind[j]) <= k:
+                    return True
+                j += 1
+        return False
+    # def containsNearbyAlmostDuplicate(self, nums, k, t):
+    #     """
+    #     :type nums: List[int]
+    #     :type k: int between i nums j
+    #     :type t: int between nums[i] and nums[j]
+    #     :rtype: bool
+    #     """
+    #     bucket={}
+    #     for i,v in enumerate(nums):
+    #         bucketnums = v/t if t else v
+    #         offset = 1 if  t else 0
+    #         for buckidx in range(bucketnums - offset, bucketnums + offset + 1):
+    #             if buckidx in bucket and abs(v - bucket[buckidx]) <= t:
+    #                 return True
+    #         bucket[bucketnums] = v
+    #         if len(bucket) > k:
+    #             del bucket[nums[i - k]/t if t else nums[i-k]]
+    #     return False
+
+
+    def containsNearbyDuplicate(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: bool
+        """
+        res ={}
+        for i in xrange(len(nums)):
+            x = nums[i]
+            if x in res:
+                last = res[x]
+                if i -last <= k:
+                    return True
+                else:
+                    res[x] = i
+            else:
+                res[x] = i
+        return False
+
+    def containsDuplicate(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: bool
+        """
+        res={}
+        for x in nums:
+            if x in res:
+                return True
+            else:
+                res[x] =1
+        return False
     def convertToBase7(self, num):
         """
         :type num: int
@@ -281,13 +341,17 @@ class Solution(object):
 
 
 a = Solution()
-print a.convertToBase7(0)
-print a.convertToBase7(7)
-print a.convertToBase7(3)
-print a.convertToBase7(11)
-print a.convertToBase7(-1)
-print a.convertToBase7(-7)
-print a.convertToBase7(-15)
+# print a.containsDuplicate([1,1])
+# print a.containsDuplicate([1,2,1])
+# print a.containsDuplicate([])
+# print a.containsDuplicate([1,3,4])
+# print a.convertToBase7(0)
+# print a.convertToBase7(7)
+# print a.convertToBase7(3)
+# print a.convertToBase7(11)
+# print a.convertToBase7(-1)
+# print a.convertToBase7(-7)
+# print a.convertToBase7(-15)
 
 # b=[[1,2,3],[4,5,6],[7,8,9]]
 # a.rotate(b)
@@ -299,3 +363,4 @@ print a.convertToBase7(-15)
 # print b
 # print a.strStr("w","w")
 # print a.strStr("mississippi","issip")
+print a.containsNearbyAlmostDuplicate([1,4,3,2],0,0)
