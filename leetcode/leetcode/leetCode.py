@@ -6,6 +6,36 @@
 
 
 class Solution(object):
+    def isAnagram(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: bool
+        """
+        # res1 = ''.join(sorted(s))
+        # res2 =''.join(sorted(t))
+        # if res1 == res2:
+        #     return True
+        # else:
+        #     return False
+
+        a={}
+
+        for letter in s:
+            if letter in a:
+                a[letter] += 1
+            else:
+                a[letter] = 1
+        for letter in t:
+            if letter in a and a[letter]>0:
+                a[letter] -=1
+            else:
+                return False
+        for key,v in enumerate(a):
+            if a[v]!=0:
+                return False
+        return True
+        
     def containsNearbyAlmostDuplicate(self, nums, k, t):
         ind = sorted(range(len(nums)), key = lambda x: nums[x])
         for i in range(len(nums)-1):
@@ -363,4 +393,5 @@ a = Solution()
 # print b
 # print a.strStr("w","w")
 # print a.strStr("mississippi","issip")
-print a.containsNearbyAlmostDuplicate([1,4,3,2],0,0)
+# print a.containsNearbyAlmostDuplicate([1,4,3,2],0,0)
+print a.isAnagram('a','a')
