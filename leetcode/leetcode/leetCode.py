@@ -6,6 +6,18 @@
 
 
 class Solution(object):
+    def readBinaryWatch(self, num):
+        """
+        :type num: int
+        :rtype: List[str]
+        """
+        return ['%d:%02d' % (h, m)
+                for h in range(12) for m in range(60)
+                if (bin(h)).count('1') +  bin(m).count('1') == num]
+
+
+
+
     def isAnagram(self, s, t):
         """
         :type s: str
@@ -370,7 +382,9 @@ class Solution(object):
             return res * res
 
 
-a = Solution()
+# res = a.permute(['a','b','c','d'])
+# for i,v in enumerate(res):
+#     print ''.join(v)
 # print a.containsDuplicate([1,1])
 # print a.containsDuplicate([1,2,1])
 # print a.containsDuplicate([])
@@ -394,4 +408,6 @@ a = Solution()
 # print a.strStr("w","w")
 # print a.strStr("mississippi","issip")
 # print a.containsNearbyAlmostDuplicate([1,4,3,2],0,0)
-print a.isAnagram('a','a')
+
+a = Solution()
+print a.readBinaryWatch(1)
