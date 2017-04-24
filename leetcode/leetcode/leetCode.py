@@ -5,7 +5,60 @@
 #         self.next = None
 
 
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+import random
 class Solution(object):
+
+    def __init__(self, head):
+        """
+        @param head The linked list's head.
+        Note that the head is guaranteed to be not null, so it contains at least one node.
+        :type head: ListNode
+        """
+        self.node = head
+    def getRandom(self):
+        """
+        Returns a random node's value.
+        :rtype: int
+        """
+        res = self.node.val
+        n = 0
+        cur = self.node.next
+        while cur:
+            n +=1
+            if random.randint(0, n) == 0:
+                res =cur.val
+            cur = cur.next
+        return res
+        
+
+
+# Your Solution object will be instantiated and called as such:
+# obj = Solution(head)
+# param_1 = obj.getRandom()
+    def longestPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        maps ={}
+        for chars in s:
+            maps[chars] = maps.get(chars,0)+1
+        res = 0
+        one =0
+        for v in maps:
+            if maps[v]%2==0:
+                res +=maps[v]
+            else:
+                res += maps[v]-1
+                one =1
+        return res + one 
+
+
     def numberOfBoomerangs(self, points):
         """
         :type points: List[List[int]]
