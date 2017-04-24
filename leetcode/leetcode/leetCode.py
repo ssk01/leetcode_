@@ -6,6 +6,30 @@
 
 
 class Solution(object):
+    def numberOfBoomerangs(self, points):
+        """
+        :type points: List[List[int]]
+        :rtype: int
+        """
+        res = 0
+        for p in points:
+            camp = {}
+            for q in points:
+                z=(p[0]- q[0])**2+(p[1]- q[1])**2
+                camp[z] = 1 + camp.get(z, 0)
+            for k in camp:
+                res += camp[k] * (camp[k] - 1)
+        return res
+                
+        
+    def reverseStr(self, s, k):
+        """
+        :type s: str
+        :type k: int
+        :rtype: str
+        """
+        return s[:k][::-1] + s[k:2*k]+self.reverseStr(s[2*k:],k) if s else ""
+
     def readBinaryWatch(self, num):
         """
         :type num: int
@@ -410,4 +434,4 @@ class Solution(object):
 # print a.containsNearbyAlmostDuplicate([1,4,3,2],0,0)
 
 a = Solution()
-print a.readBinaryWatch(1)
+print a.numberOfBoomerangs([[0,0],[1,0],[2,0]])
