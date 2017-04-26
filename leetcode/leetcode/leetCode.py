@@ -12,14 +12,36 @@
 #         self.next = None
 import random
 class Solution(object):
+    def isHappy(self, n):
+        """
+        :type n: int
+        :rtype: bool
+        """
+        strs = str(n)
+        s=[]
+        for ss in strs:
+            s=s+[ss]
+        res = reduce(lambda x, y : x + y**2,[int(z) for z in s],0)
+        if res == 1:
+            return True
+        else:
+            return self.isHappy(res)
 
-    def __init__(self, head):
-        """
-        @param head The linked list's head.
-        Note that the head is guaranteed to be not null, so it contains at least one node.
-        :type head: ListNode
-        """
-        self.node = head
+
+    # def plusOne(self, digits):
+    #     """
+    #     :type digits: List[int]
+    #     :rtype: List[int]
+    #     """
+    #     num = reduce(lambda x, y: x * 10 + y, digits)+1
+    #     return [int(i) for i in str(num)]
+    # def __init__(self, head):
+    #     """
+    #     @param head The linked list's head.
+    #     Note that the head is guaranteed to be not null, so it contains at least one node.
+    #     :type head: ListNode
+    #     """
+    #     self.node = head
     def getRandom(self):
         """
         Returns a random node's value.
@@ -487,4 +509,4 @@ class Solution(object):
 # print a.containsNearbyAlmostDuplicate([1,4,3,2],0,0)
 
 a = Solution()
-print a.numberOfBoomerangs([[0,0],[1,0],[2,0]])
+print a.isHappy(19)
