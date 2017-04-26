@@ -10,22 +10,71 @@
 #     def __init__(self, x):
 #         self.val = x
 #         self.next = None
-import random
+# import random
+# from math import log
+
 class Solution(object):
+    def maxSubArray(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        res = 0
+        maxres = 0
+        for num in nums:
+            if num>=0:
+                res+=num
+                if res > maxres:
+                    maxres = res
+            elif res+num>0:
+                res =res+num
+            else:
+                res = 0
+        
+        return maxres if maxres!=0 else max(nums)
+    def isPowerOfTwo(self, n):
+        """
+        :type n: int
+        :rtype: bool
+        """
+        return (n>0) and (n & (n-1))==0
+    def isPowerOfThree(self, n):
+        """
+        :type n: int
+        :rtype: bool
+        """
+        if n <= 0 :
+            return False
+        else:
+            root = log(n,3)
+            root_round = round(root)
+            diff = abs(root - root_round)
+            return True if diff <= 1e-10 else False
+
+    def sumofdigits(self, n):
+        res = 0
+        while n:
+            res+=(n%10)**2
+            n=n/10
+        return res
     def isHappy(self, n):
         """
         :type n: int
         :rtype: bool
         """
-        strs = str(n)
-        s=[]
-        for ss in strs:
-            s=s+[ss]
-        res = reduce(lambda x, y : x + y**2,[int(z) for z in s],0)
-        if res == 1:
+        
+        
+        slow = self.sumofdigits(n)
+        fast = slow
+        fast = self.sumofdigits(fast)
+        while fast!=slow:
+            slow = self.sumofdigits(slow)
+            fast = self.sumofdigits(fast)
+            fast = self.sumofdigits(fast)
+        if slow ==1:
             return True
         else:
-            return self.isHappy(res)
+            return False
 
 
     # def plusOne(self, digits):
@@ -509,4 +558,4 @@ class Solution(object):
 # print a.containsNearbyAlmostDuplicate([1,4,3,2],0,0)
 
 a = Solution()
-print a.isHappy(19)
+print a.maxSubArray([-2,1,-3,4,-1,2,1,-5,4])
