@@ -12,8 +12,130 @@
 #         self.next = None
 # import random
 # from math import log
-
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
 class Solution(object):
+    def reverseList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        prev = None
+        cur = None
+        while head:
+            cur = head
+            head = head.next
+            cur.next = prev
+            prev = cur
+        return cur
+            
+    def rob(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        #(0,1)  0 not include root , 1 may include root
+        def dfsrob(self, node):
+            if node == None:
+                return (0, 0)
+            l = self.dfsrob(node.left)
+            r = self.dfsrob(node.right)
+            return (l[1]+r[1], max(l[1]+r[1], l[0]+r[0]+ node.val))
+        return self.dfsrob(root)[1]
+
+        
+    def addStrings(self, num1, num2):
+        """
+        :type num1: str
+        :type num2: str
+        :rtype: str
+        """
+        res =[]
+        i = len(num1)-1
+        j = len(num2)-1
+        tmp = 0
+        inc =0
+        while i!=-1 and j!=-1:
+            tmp = int(num1[i]) +int(num2[j])+inc
+            if tmp>=10:
+                tmp -= 10
+                inc = 1
+            else:
+                inc = 0
+            res.append(tmp)
+            i-=1
+            j-=1
+        while i!=-1:
+            tmp = int(num1[i]) + inc 
+            if tmp>=10:
+                tmp -= 10
+                inc = 1
+            else:
+                inc = 0
+            res.append(tmp)
+            i-=1
+        while j!=-1:
+            tmp = int(num2[j]) + inc
+            if tmp>=10:
+                tmp -= 10
+                inc = 1
+            else:
+                inc = 0
+            res.append(tmp)
+            j-=1
+        if inc ==1:
+            res.append(1)
+            
+        ans = [str(x) for x in reversed(res)]
+        ans="".join(ans)
+        return ans
+
+
+    def rob(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        # pre, cur, tmp= 0, 0, 0
+        # for i in range(1,len(nums)):
+        #     if i%2 == 0:
+        #         pre = max(pre+nums[i], cur)
+        #     else:
+        #         cur = max(cur+nums[i], pre)
+            
+        # a = max(pre, cur)
+        # pre, cur, tmp= 0, 0, 0
+        # for i in range(0,len(nums)-1):
+        #     if i%2 == 0:
+        #         pre = max(pre+nums[i], cur)
+        #     else:
+        #         cur = max(cur+nums[i], pre)
+        # b = max(pre, cur)
+        # return max(a,b)
+        
+        # pre, cur, tmp= 0, 0, 0
+        # for i in nums:
+        #     tmp = max(pre+i,cur)
+        #     pre = cur
+        #     cur = tmp
+        # return tmp
+
+        # if len(nums)==0:
+        #     return 0
+        # elif len(nums)==1:
+        #     return nums[1]
+        # elif len(nums)==2:
+        #     return max(nums[1],nums[0])
+        # else:
+        #     ans1 = nums[0] + self.rob(nums[2:])
+        #     ans2 = nums[1] + self.rob(nums[3:])
+        #     return max(ans1, ans2)
+
+
     def maxSubArray(self, nums):
         """
         :type nums: List[int]
@@ -558,4 +680,4 @@ class Solution(object):
 # print a.containsNearbyAlmostDuplicate([1,4,3,2],0,0)
 
 a = Solution()
-print a.maxSubArray([-2,1,-3,4,-1,2,1,-5,4])
+print a.addStrings("1110","99")
