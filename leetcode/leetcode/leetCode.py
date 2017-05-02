@@ -1,3 +1,6 @@
+# from collections import Counter
+import collections
+
 # Definition for singly-linked list.
 # class ListNode(object):
 #     def __init__(self, x):
@@ -20,12 +23,53 @@
 #         self.right = None
 import random
 class Solution(object):
-    
-    def __init__(self, nums):
+    def singleNumber(self, nums):
         """
         :type nums: List[int]
+        :rtype: List[int]
         """
-        self.nums = nums
+        diff = reduce(lambda a, b: a^b,nums,0)
+        diff &= -diff #the last  1 
+        res =[0, 0]
+        for i in nums:
+            if i & diff == 0:
+                res[0] ^= i;
+            else:
+                res[1] ^= i;
+        return res
+
+        
+    def frequencySort(self, s):
+        c = collections.Counter(s)
+        lists = sorted((c[i],i) for i in c)
+        # print lists
+        return reduce(lambda a, b:b[1]*b[0]+a ,lists,"")
+
+        # c = collections.Counter(s)
+        # return reduce(lambda a,b: b[1]*b[0]+a, sorted((c[i],i) for i in c), '')
+    def integerBreak(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        if n == 2:
+            return 1
+        if n == 3:
+            return 2
+        if n == 4:
+            return 4
+        res = 1
+        while n > 4:
+            res *= 3
+            n -= 3
+        # n 4 3 2
+        return res * n 
+    
+    # def __init__(self, nums):
+    #     """
+    #     :type nums: List[int]
+    #     """
+    #     self.nums = nums
 
     def reset(self):
         """
@@ -711,4 +755,10 @@ class Solution(object):
 # print a.containsNearbyAlmostDuplicate([1,4,3,2],0,0)
 
 a = Solution()
-print a.addStrings("1110","99")
+# print a.addStrings("1110","99")
+ss="abbbbbbac"
+print a.frequencySort(ss)
+# c = collections.Counter(ss)
+# print c
+# print sorted((c[i],i) for i in c)
+# for
