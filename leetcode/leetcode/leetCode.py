@@ -29,7 +29,279 @@ import random
 #         self.left = None
 #         self.right = None
 
-class Solution(object):
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class BSTIterator(object):
+    def __init__(self, root):
+        self.stk = []
+        p = root
+        while p:
+            self.stk.append(p)
+            p = p.left
+
+    def hasNext(self):
+        if self.stk:
+            return True
+
+    def next(self):
+        node = self.stk.pop()
+        p = node.right
+        while p:
+            self.stk.append(p)
+            p = p.left
+        return node.val
+
+    def kthSmallest(self, root, k):
+        i = k
+        stk = []
+        p = root
+
+        while stk or p:
+            while p:
+                stk.append(p)
+                p = p.left
+            if stk:
+                node = stk.pop()
+                if i==1:
+                    return node.val
+                else:
+                    i -=1
+                p = node.right
+        return -1
+    def postorderTraversal(self, root):
+        if not root:
+            return []
+        stk = [root]
+        res = []
+        p = root
+        while stk:
+            node = stk.pop()
+            res.append(node.val)
+            if node.left: stk.append(node.left)
+            if node.right: stk.append(node.right)
+        return res[::-1]          
+    def isValidBST(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        stk = []
+        p = root
+        res = []
+        while stk or p:
+            while p:
+                stk.append(p)
+                p = p.left
+            if stk:
+                node = stk.pop()
+                res.append(node.val)
+                p = node.right
+        if res == sorted(res):
+            return True
+        return False
+
+    def preorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        if not root:
+            return []
+        stk = [root]
+        res = []
+        p = root
+        while stk:
+            node = stk.pop()
+            res.append(node.val)
+            if node.right: stk.append(node.right)
+            if node.left: stk.append(node.left)
+        return res    
+        # stk = []
+        # res = []
+        # p = root
+        # while stk or p:
+        #     while p:
+        #         res.append(p.val)
+       #          stk.append(p.right)
+        #         p = p.left
+        #         
+        #     if stk:
+        #         p = stk.pop()
+        # return res
+
+
+    def inorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        stk = []
+        p = root
+        res = []
+        while stk or p:
+            while p:
+                stk.append(p)
+                p = p.left
+            if stk:
+                node = stk.pop()
+                res.append(node.val)
+                p = node.right
+        return res
+
+        
+        # s = []
+        # def inorder(root):
+        #     if root.left: inorder(root.left)        
+        #     s.append(root.val)
+        #     if root.right: inorder(root.right)
+        # if root:
+        #     inorder(root)
+        # return s
+    def magicalString(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        a = [1,2,2]
+        end = 2
+        while len(a) < n:
+            a += [(3-a[-1])] * a[end]
+            end += 1
+        return a[:n].count(1)
+    def majorityElement(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        
+        return sorted(nums)[len(nums)//2]
+    def findDiagonalOrder(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: List[int]
+        """
+
+
+    def addTwoNumbers(self, l1, l2):
+        """
+        :type l1: ListNode
+        :type l2: ListNode
+        :rtype: ListNode
+        """
+        
+    def nextGreaterElements(self, nums):
+        stk = []
+        res =[-1]*len(nums)
+        for i in range(len(nums)) * 2:
+            while stk and nums[stk[-1]] < nums[i]:
+                res[stk.pop()] = nums[i]
+            stk.append(i)
+        return res
+
+    def topKFrequent(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: List[int]
+        """
+        c = collections.Counter(nums)
+        return heapq.nlargetest(k, c, c.get)
+    def getMinimumDifference(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        l = []
+        def inorder(node):
+            if node.left: bfs(node.left)
+            l.append(node.val)
+            if node.right: bfs(node.right)
+        inorder(root)
+        return min([abs(l[i] - l[i+1]) for i in range(len(l)-1)])        
+
+
+    def get(self,root,maps):
+            if root not in maps:
+                maps[root] = root.val +self.get(root.left,maps)+self.get(root.right, maps)
+            return maps[root]
+    def fuck(self, root,maps):
+        if not root:
+            return 0
+        return abs(maps[root.left]- maps[root.right])+self.fuck(root.left,maps)+self.fuck(root.right,maps)
+    def findTilt(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        maps={None:0}
+        self.get(root,maps)
+        return self.fuck(root,maps)
+
+
+    def toHex(self, num):
+        """
+        :type num: int
+        :rtype: str
+        """
+        if num == 0: return "0"
+        elif num < 0: num += 2**32
+        converthex, res =["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"], ""
+        while num:
+            res = converthex[num%16] + res
+            num = num//16
+        return res
+        
+
+
+    def hasCycle(self, head):
+        """
+        :type head: ListNode
+        :rtype: bool
+        """
+        if not head  or not head.next:
+            return False
+        slow = head.next
+        fast = head.next.next
+        while slow != fast  :
+            if not fast or not fast.next:
+                return False
+            else:
+                fast = fast.next.next
+                slow = slow.next 
+        return True
+    def generate(self, numRows):
+        """
+        :type numRows: int
+        :rtype: List[List[int]]
+        """
+        if numRows == 0:
+            return []
+        if numRows == 1:
+            return [[1]]
+        tmp = self.generate(numRows-1)
+        tmp1=[1]
+        for i in range(numRows - 2):
+            tmp1.append(tmp[numRows-2][i]+tmp[numRows-2][i+1])
+        tmp1.append(1)
+        tmp.append(tmp1)
+        return tmp
+    def binaryTreePaths(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[str]
+        """
+        if not root:
+            return []
+        if not root.left and not root.right:
+            return [str(root.val)]
+        treepaths = [str(root.val) + '->' + path for path in self.binaryTreePaths(root.left)]
+        treepaths += [str(root.val) + '->' + path for path in self.binaryTreePaths(root.right)]
+        return treepaths
+        
     def helper(self, root, sum, store, pre):
         if not root:    
             return 0
@@ -815,11 +1087,25 @@ class Solution(object):
 # print a.strStr("mississippi","issip")
 # print a.containsNearbyAlmostDuplicate([1,4,3,2],0,0)
 
-a = Solution()
+# a = Solution()
 # print a.addStrings("1110","99")
-ss="abbbbbbac"
-print a.frequencySort(ss)
+# ss="abbbbbbac"
+# print a.frequencySort(ss)
 # c = collections.Counter(ss)
 # print c
 # print sorted((c[i],i) for i in c)
 # for
+# f =["str"+ l for l in ["a",'b','v']]
+# print f+["dfdf"]
+
+# a =1 
+# b=10
+# a,b=a-1,a+1
+# print a,b
+# nums =[1,2,3,1]
+# counts = {}
+# for x in nums:
+#     counts[x] = counts.setdefault(x, 0) + 1
+# print counts
+a = Solution()
+print a.nextGreaterElements([3,2,1,4])
