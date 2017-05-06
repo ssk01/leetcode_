@@ -8,11 +8,6 @@ import collections
 #         self.next = None
 
 
-# Definition for singly-linked list.
-# class ListNode(object):
-#     def __init__(self, x):
-#         self.val = x
-#         self.next = None
 # import random
 # from math import log
 # Definition for a binary tree node.
@@ -22,39 +17,83 @@ import collections
 #         self.left = None
 #         self.right = None
 import random
-# Definition for a binary tree node.
-# class TreeNode(object):
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
+class Solution(object):
+    
+    def isInterleave(self, s1, s2, s3):
+        """
+        :type s1: str
+        :type s2: str
+        :type s3: str
+        :rtype: bool
+        """
+        ls1 = len(s1)
+        ls2 = len(s2)
+        ls3 = len(s3)
+        def fuck(s1,l1,s2,l2,s3,l3):
+            if  l1 == ls1 : return s2[l2:]==s3[l3:]
+            if l2 == ls2: return s1[l1:]==s3[l3:]
+            if l3 == ls3: return False
 
-# Definition for a binary tree node.
-# class TreeNode(object):
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
-class BSTIterator(object):
-    def __init__(self, root):
-        self.stk = []
+            if s1[l1]!=s2[l2]:
+                if s3[l3]==s1[l1]:
+                    return fuck(s1,l1+1,s2,l2,s3,l3+1)
+                if s3[l3] == s2[l2]:
+                    return fuck(s1,l1,s2,l2+1,s3,l3+1)
+                else:
+                    return False
+            else:
+                if s3[l3]==s1[l1]:
+                    return fuck(s1,l1,s2,l2+1,s3,l3+1) or  fuck(s1,l1+1,s2,l2,s3,l3+1)
+                else:
+                    return False
+            
+        return fuck(s1,0,s2,0,s3,0)
+
+
+
+    def recoverTree(self, root):
+        stk = []
         p = root
-        while p:
-            self.stk.append(p)
-            p = p.left
+        node1 = None
+        node2 = None 
+        prev = TreeNode(-2**32)
+        notfirst = False
+        while stk or p:
+            while p:
+                stk.append(p)
+                p = p.left
+            if stk:
+                node = stk.pop()
+                if not node1:
+                    if prev.val>=node.val:
+                        node1 = prev
+                if node1:
+                    if prev.val>=node.val:
+                        node2 = node 
+                prev = node
+                p = node.right
+        node1.val, node2.val = node2.val, node1.val
+        
+# class BSTIterator(object):
+#     def __init__(self, root):
+#         self.stk = []
+#         p = root
+#         while p:
+#             self.stk.append(p)
+#             p = p.left
 
-    def hasNext(self):
-        if self.stk:
-            return True
+#     def hasNext(self):
+#         if self.stk:
+#             return True
 
-    def next(self):
-        node = self.stk.pop()
-        p = node.right
-        while p:
-            self.stk.append(p)
-            p = p.left
-        return node.val
-
+#     def next(self):
+#         node = self.stk.pop()
+#         p = node.right
+#         while p:
+#             self.stk.append(p)
+#             p = p.left
+#         return node.val
+##################################
     def kthSmallest(self, root, k):
         i = k
         stk = []
@@ -1108,4 +1147,4 @@ class BSTIterator(object):
 #     counts[x] = counts.setdefault(x, 0) + 1
 # print counts
 a = Solution()
-print a.nextGreaterElements([3,2,1,4])
+print a.isInterleave("","","")
