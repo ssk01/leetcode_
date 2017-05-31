@@ -17,16 +17,65 @@ import collections
 #         self.left = None
 #         self.right = None
 import random
+import Queue
+
+
 class Solution(object):
+    def solveNQueens(self, n):
+        """
+        :type n: int
+        :rtype: List[List[str]]
+        """
+        def fuck():
+            stk = []
+            stk.append([[],[],[]])
+            while stk:
+                a = stk.pop()
+                queen=a[0]
+                xy_dif=a[1]
+                xy_sum=a[2]
+                length = len(queen)
+                if length == n:
+                    result.append(queen)
+                for j in range(n):
+                    if j not in queen and length-j not in xy_dif and length+j not in xy_sum:
+                        stk.append([queen+[j], xy_dif + [length-j] , xy_sum + [length+j]])
+        result = []
+        fuck()
+        return [["."*i + "Q" + "."*(n-i-1) for i in sol]for sol in result]
+                
+
+        # def DFS(queen, xy_dif, xy_sum):
+        #     length = len(queen)
+        #     if length == n:
+        #         result.append(queen)
+        #         # result.append(queen[:])
+        #         return
+        #     for j in range(n):
+        #         if j not in queen and length-j not in xy_dif and length+j not in xy_sum:
+        #             DFS(queen+[j], xy_dif + [length-j] , xy_sum + [length+j])
+        #             # queen +=[j]
+        #             # xy_dif +=[length-j]
+        #             # xy_sum +=[length+j]
+        #             # DFS(queen,xy_dif,xy_sum)
+        #             # queen.remove(j)
+        #             # xy_dif.remove(length-j)
+        #             # xy_sum.remove(length+j)
+        # result = []
+        # DFS([], [], [])
+        # return [["."*i + "Q" + "."*(n-i-1) for i in sol]for sol in result]
+
+
+        
     def numTrees(self, n):
         """
         :type n: int
         :rtype: int
         """
-        g=[1 for i range(n)]
+        g=[1 for i in range(n)]
         for i in range(n):
             for j in range(i):
-                
+                pass
 
 
     def setZeroes(self, matrix):
@@ -138,7 +187,7 @@ class Solution(object):
         res =[0 for x in range(2**n)]
         res[1]=1
         for i in range(1,n):
-            res[2**(i):2**(i+1)]=[x + x**i for x in  res[:2**(i):-1]]]
+            res[2**(i):2**(i+1)]=[x + x**i for x in res[:2**(i)][::-1]]
         return res
 
     def isInterleave(self, s1, s2, s3):
@@ -1269,4 +1318,4 @@ class Solution(object):
 #     counts[x] = counts.setdefault(x, 0) + 1
 # print counts
 a = Solution()
-print a.grayCode(2)
+print a.solveNQueens(4)
