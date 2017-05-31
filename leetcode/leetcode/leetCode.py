@@ -18,7 +18,129 @@ import collections
 #         self.right = None
 import random
 class Solution(object):
-    
+    def numTrees(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        g=[1 for i range(n)]
+        for i in range(n):
+            for j in range(i):
+                
+
+
+    def setZeroes(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: void Do not return anything, modify matrix in-place instead.
+        """
+        row = len(matrix)
+        if row == 0:
+            return
+        col = len(matrix[0])
+        if col == 0:
+            return
+        
+        rowline = [0 for x in range(row)]
+        colline = [0 for x in range(col)]
+        for i in range(row):
+            for j in range(col):
+                if matrix[i][j] == 0:
+                    rowline[i] = 1
+                    colline[j] = 1
+
+                
+        for i in range(row):
+            if rowline[i] == 1:
+                matrix[i] = [0 for x in range(col)]
+            for j in range(col):
+                if colline[j] == 1:
+                    matrix[i][j] = 0
+
+
+
+    # def subsets(self, nums):
+    #     """
+    #     :type nums: List[int]
+    #     :rtype: List[List[int]]
+    #     """
+    #     res =[[]]
+    #     for num in sorted(nums):
+    #         res+=[[num] + x for x in res]
+    #     return res
+    # def subsets(self, nums):
+    #     res = []
+    #     nums.sort()
+    #     for i in xrange(1<<len(nums)):
+    #         tmp = []
+    #         for j in xrange(len(nums)):
+    #             if i & 1 << j:  # if i >> j & 1:
+    #                 tmp.append(nums[j])
+    #         res.append(tmp)
+    #     return res
+    def subsets(self, nums):
+        res = []
+        self.dfs(sorted(nums), 0, [], res)
+        return res
+    def dfs(self, nums, index, path, res):
+        res.append(path)
+        for i in xrange(index, len(nums)):
+            self.dfs(nums, i+1, path+[nums[i]], res)
+
+
+
+    maps={}
+    def helper(self, m, n):
+        if (m,n) in self.maps:
+            return self.maps[(m,n)]
+        else:
+            if m ==1:
+                return 1
+            if n==1:
+                return 1
+            self.maps[(m,n)]=self.helper(m-1,n)+self.helper(m,n-1)
+            return self.maps[(m,n)]
+    def uniquePaths(self, m, n):
+        self.maps[(1,1)]=1
+        res = self.helper(m,n)
+        return res
+    # def helper(self, m, n,maps):
+    #     if (m,n) in maps:
+    #         return maps[(m,n)]
+    #     else:
+    #         if m ==1:
+    #             return 1
+    #         if n==1:
+    #             return 1
+    #         maps[(m,n)]=self.helper(m-1,n,maps)+self.helper(m,n-1,maps)
+    #         return maps[(m,n)]
+    # def uniquePaths(self, m, n):
+    #     """
+    #     :type m: int
+    #     :type n: int
+    #     :rtype: int
+    #     """
+    #     maps={}
+    #     maps[(1,1)]=1
+    #     res = self.helper(m,n,maps)
+    #     return res
+
+
+    def grayCode(self, n):
+        """
+        :type n: int
+        :rtype: List[int]
+        """
+        if n == 0:
+            return [0]
+        if n == 1:
+            return [0,1]
+        res =[0 for x in range(2**n)]
+        res[1]=1
+        for i in range(1,n):
+            res[2**(i):2**(i+1)]=[x + x**i for x in  res[:2**(i):-1]]]
+        return res
+
     def isInterleave(self, s1, s2, s3):
         """
         :type s1: str
@@ -1147,4 +1269,4 @@ class Solution(object):
 #     counts[x] = counts.setdefault(x, 0) + 1
 # print counts
 a = Solution()
-print a.isInterleave("","","")
+print a.grayCode(2)
