@@ -20,6 +20,82 @@ import random
 import Queue
 
 class Solution(object):
+    def hasPathSum(self, root, sum):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: bool
+        """
+
+        def fuck(root, sum):
+            if not root:
+                return False
+            a = sum-root.val
+            if not root.left and not root.right:
+                return a==0
+            return  fuck(root.left, a) or fuck(root.right, a)
+        if not root:
+            return False
+        return fuck(root,sum)
+
+    def minDepth(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        def fuck(root):
+            if not root:
+                return 0
+            left = fuck(root.left)
+            right = fuck(root.right)
+            if left==0:
+                return 1+right
+            if right == 0:
+                return 1+left
+            return 1+min(left, right)        
+        return fuck(root)
+
+
+    def isBalanced(self, root):
+        def fuck(root):
+            if not root:
+                return 0
+            left = fuck(root.left)
+            right = fuck(root.right)
+            if left == -1 or right == -1 or abs(left - right)>1:
+                return -1
+            return 1+max(left, right)
+        return fuck(root) != -1
+
+
+    def sortedArrayToBST(self, nums):
+        def fuck(i,j):
+            if i==j:
+                return None
+            mid =int((i+j)/2)
+            root = TreeNode(nums(mid))
+            root.left = fuck(i, mid)
+            root.right = fuck(mid+1, j)
+            return root
+        return fuck(0,len(nums))
+
+    def buildTree(self, inorder, postorder):
+        """
+        :type inorder: List[int]
+        :type postorder: List[int]
+        :rtype: TreeNode
+        """
+        def helper(i,j,size):
+            if size == 0:
+                return None
+            rootValue = postorder[j+size-1]
+            root = TreeNode(rootValue)
+            indexs = inorder.index(rootValue)            
+            root.left = helper(i, j, indexs-i)
+            root.right = helper(indexs+1,j+indexs-i, size-(indexs-i)-1)
+            return root
+        return helper(0,0,len(inorder))
+        
     def buildTree(self, preorder, inorder):
         if len(preorder) == 0:
             return None
@@ -27,22 +103,21 @@ class Solution(object):
         stack = [head]
         i = 1
         j = 0
-        while j < len(inorder):
-            temp = None
-            while stack and stack[-1].val != inorder[j].val :
-                tmp = TreeNode(preorder[i])
-                stack.append(tmp)
-                i+=1                
-            # if stack:
-            #     temp = stack.pop()
-            #     j+=1
-            temp = stack.pop()
-            j+=1
-            if inorder[i] == preorder[j]:
-                stack.append(inorder[i])
-                i+=1
+        
+        while i < len(preorder):
+            tmp = None
+            t = TreeNode(preorder[i])
+            while stack and stack[-1].val == inorder[j]:
+                tmp = stack.pop()
                 j+=1
-        return head       
+            if tmp:
+                tmp.right = t
+            else:
+                stack[-1].left = t
+            stack.append(t)
+            i+=1
+            
+        return head
         # def helper(p1,p2,p3,p4):
         #     if p1==p2 or p3==p4:
         #         return None
