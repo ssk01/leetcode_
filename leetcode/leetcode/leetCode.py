@@ -11,16 +11,217 @@ import collections
 # import random
 # from math import log
 # Definition for a binary tree node.
-# class TreeNode(object):
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
+class TreeNode(object):
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
 import random
 import Queue
 
-
 class Solution(object):
+    def buildTree(self, preorder, inorder):
+        if len(preorder) == 0:
+            return None
+        head = TreeNode(preorder[0])
+        stack = [head]
+        i = 1
+        j = 0
+        while j < len(inorder):
+            temp = None
+            while stack and stack[-1].val != inorder[j].val :
+                tmp = TreeNode(preorder[i])
+                stack.append(tmp)
+                i+=1                
+            # if stack:
+            #     temp = stack.pop()
+            #     j+=1
+            temp = stack.pop()
+            j+=1
+            if inorder[i] == preorder[j]:
+                stack.append(inorder[i])
+                i+=1
+                j+=1
+        return head       
+        # def helper(p1,p2,p3,p4):
+        #     if p1==p2 or p3==p4:
+        #         return None
+        #     rootValue = preorder[p1]    
+        #     root = TreeNode(rootValue)
+        #     indexs = inorder[p3:p4].index(rootValue)
+        #     root.left = helper(p1+1, p1+1+indexs,p3,p3+indexs)
+        #     root.right = helper(p1+1+indexs, p2, p3+1+indexs, p4)
+        #     return root
+        # if not preorder or not inorder:
+        #     return None
+        # return helper(0,len(preorder),0,len(inorder))
+
+        # rootValue = preorder[0]
+        # root = TreeNode(rootValue)
+        # indexs = inorder.index(rootValue)
+        
+        # root.left = self.buildTree(preorder[1:1+indexs], inorder[0:indexs])
+        # root.right = self.buildTree(preorder[1+indexs:], inorder[indexs+1:])
+
+        # return root
+        
+
+        # if not preorder or not inorder:
+        #     return None
+        # rootValue = preorder[0]
+        # root = TreeNode(rootValue)
+        # indexs = inorder.index(rootValue)
+        
+        # root.left = self.buildTree(preorder[1:1+indexs], inorder[0:indexs])
+        # root.right = self.buildTree(preorder[1+indexs:], inorder[indexs+1:])
+
+        # return root
+
+        # if inorder:
+        #     ind = inorder.index(preorder.pop(0))
+        #     root = TreeNode(inorder[ind])
+        #     root.left = self.buildTree(preorder, inorder[0:ind])
+        #     root.right = self.buildTree(preorder, inorder[ind+1:])
+        #     return root
+        
+    def zigzagLevelOrder(self, root):
+        if not root:
+            return []
+        ans, level = [],[root]
+        left = True
+        while level:
+            if left:
+                ans.append([node.val for node in level])
+            else:
+                ans.append([node.val for node in level[::-1]])
+            left = not left
+            level =[k for node in level for k in (node.left, node.right) if k]
+        return ans
+    
+    def levelOrder(self, root):
+        ans, level = [], [root]
+        while root and level:
+            ans.append([node.val for node in level])
+            LRpair = [(node.left, node.right) for node in level]
+            level = [leaf for LR in LRpair for leaf in LR if leaf]
+        return ans
+        # """
+        # :type root: TreeNode
+        # :rtype: List[List[int]]
+        # """
+        # if not root:
+        #     return []
+        # res = []
+        # que = Queue.Queue()
+        # que.put(root)
+        # while !que.empty:
+        #     n = que.
+        #     tmp=[]
+        #     for i in range(n):
+        #         a = que.get() 
+        #         tmp.append(a.val)
+        #         if a.right != None:
+        #             que.put(a.right)
+        #         if a.left != None:
+        #             que.put(a.left)
+        #     res.append(tmp)
+        # return res
+
+
+    def isSymmetric(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        def helper(lhs, rhs):
+            if lhs==None and rhs == None:
+                return True
+            if lhs!= None and rhs!= None:
+                return rhs.val==lhs.val and helper(lhs.left,rhs.right) and 
+                helper(lhs.right,rhs.left)
+            return False
+        if root is None:
+            return True 
+        return helper(root.left, root.right)
+        # if root is None:
+        #     return True
+        # stk=[]
+        # stk.append(root.left)
+        # stk.append(root.right)
+        # while stk:
+        #     a1 = stk.pop()
+        #     a2 = stk.pop()
+        #     if a1 != None and a2 != None:
+        #         if a1.val == a2.val:
+        #             stk.append(a1.left)
+        #             stk.append(a2.right)
+        #             stk.append(a1.right)
+        #             stk.append(a2.left)
+        #             continue
+        #     if a1 == None and a2 == None:
+        #         continue
+        #     return False
+        # return True
+
+        
+
+
+
+
+    def totalNQueens(self, n):
+        # def isOk(queens,j, length):
+        #     for i,k in enumerate(queens):
+        #         if i-k == length - j or i+k == length+j:
+        #             return False
+        #     return True
+        # def DFS(queen):
+        #     length = len(queen)
+        #     if length == n:
+        #         result.append(queen)
+        #         return
+        #     for j in range(n):
+        #         if j not in queen:
+        #             if isOk(queen,j,length):
+        #                 DFS(queen+[j])
+        # result = []
+        # DFS([])
+        # return len(result)
+
+        def DFS(queen, xy_dif, xy_sum):
+            length = len(queen)
+            if length == n:
+                result.append(queen)
+                return
+            for j in range(n):
+                if j not in queen and length-j not in xy_dif and length+j not in xy_sum:
+                    DFS(queen+[j], xy_dif + [length-j] , xy_sum + [length+j])
+        
+        result = []
+        DFS([], [], [])
+        return len(result)
+
+
+
+    def generateTrees(self, n):
+        if n == 0:
+            return []
+        def node(val, left, right):
+            nodes = TreeNode(val)
+            nodes.left = left
+            nodes.right = right
+            return nodes
+        def trees(first, last):
+            if first == last:
+                return [None]
+            return[node(root, left, right)
+                 for root in range(first, last)
+                 for left in trees(first,root)
+                 for right in trees(root+1,last) ] 
+        return trees(1,n+1)
+
+
+
+
     def solveNQueens(self, n):
         """
         :type n: int
@@ -72,10 +273,29 @@ class Solution(object):
         :type n: int
         :rtype: int
         """
-        g=[1 for i in range(n)]
-        for i in range(n):
-            for j in range(i):
-                pass
+        def helper(n):
+            if n in maps:
+                return maps[n]
+            res = 0
+            for i in range(n):
+                res += helper(i)*helper(n-i-1)
+            maps[n] = res
+            return res
+        maps={}
+        maps[0] = 1
+        maps[1] = 1
+        return helper(n)
+
+        
+        # maps=[1 for i in range(n+1)]
+        # for i in range(2,n+1):
+        #     res = 0
+        #     for j in range(i):
+        #         res +=maps[j]*maps[i-j-1]
+        #     maps[i] = res
+        # return maps[n]
+
+
 
 
     def setZeroes(self, matrix):
