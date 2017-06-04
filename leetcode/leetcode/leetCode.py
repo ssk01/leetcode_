@@ -20,6 +20,31 @@ import random
 import Queue
 
 class Solution(object):
+    def pathSum(self, root, sum):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: List[List[int]]
+        """
+        def fuck(root, sum, lists):
+            if not root:
+                return False
+            a = sum - root.val
+            if not root.left and not root.right
+                if a == 0:
+                    lists.append(root)
+                    res.append(lists)
+                    return True
+                else:
+                    return False
+            if fuck(root.left, a, lists+[root]) or fuck(root.right, a, lists+[root]):
+                return True
+            else:
+                return False
+        res =[]
+        fuck(root, sum, [])
+        return res
+
     def hasPathSum(self, root, sum):
         """
         :type root: TreeNode
