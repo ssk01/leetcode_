@@ -18,8 +18,244 @@ class TreeNode(object):
         self.right = None
 import random
 import Queue
+# class TreeLinkNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+#         self.next = None
 
-class Solution(object):
+class Solution:
+    def jump(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        n = len(nums)
+        if n < 2: return 0
+        steps = 0
+        i = 0
+        currentMax = 0
+        nextMax = 0
+
+        while currentMax+1 > i:
+            steps+=1
+            while i <= currentMax:
+                nextMax = max(nextMax, nums[i]+i)
+                if nextMax >= n-1:
+                    return steps
+                i+=1
+            currentMax = nextMax
+        return steps
+
+
+
+        # def fck(i):
+        #     if i >=n-1
+        #         return 0
+        #     if i in maps:
+        #         return maps[i]
+        #     mins = 2**31-1
+        #     for k in range(nums[i]):
+        #         mins = min(1+fck(i+k),mins)
+        #     maps[i] = mins
+        #     return mins 
+         
+        #  n = len(nums)
+        #  maps={}
+        #  maps[n-1] = 0
+        #  return fck(0)
+
+    def canJump(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: bool
+        """
+
+        """
+        :type nums: List[int]
+        :rtype: bool
+        """
+        i = 0
+        reach = 0
+        n = len(nums)
+        while i<=reach:
+            if i<n:
+                reach = max(reach, nums[i] + i)
+                i+=1
+            else:
+                break
+        return i == n
+
+    def minPathSum(self, grid):
+        """
+        :type grid: List[List[int]]
+        :rtype: int
+        """
+        
+        rows = len(grid)
+        cols = len(grid[0])
+        for i in range(rows-2,-1,-1):
+            grid[i][cols-1] += grid[i+1][cols-1]
+        for j in range(cols-2, -1, -1):    
+            grid[rows-1][j] += grid[rows-1][j+1]
+        for i in range(rows-2, -1, -1):
+            for j in range(cols-2, -1, -1):
+                grid[i][j] += min(grid[i][j+1], grid[i+1][j]) 
+        return grid[0][0]
+
+
+
+    def countNodes(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        def fuck(root, h):
+            if h==2:
+                i = 0
+                if root.left:
+                    i+=1
+                    if root.right:
+                        i+=1
+                return i
+            return fuck(root.left, h-1)+fuck(root.right, h-1)
+        height = 0
+        num = 0
+        beg = root
+        while root:
+            height += 1
+            root = root.left
+        if height == 1:
+            return 1
+        if height == 0:
+            return 0
+        num =2**(height-1) -1
+        level = [beg]
+        lens = fuck(root,height)
+        num = num +lens
+        return num
+    def rightSideView(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        res = []
+        if root:
+            level = [root]
+            while level:
+                res.append(level[-1].val)
+                level = [kid for node in level for kid in (node.left, node.right) if kid]
+        return res
+
+
+    
+    def sumNumbers(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        def fuck(root, sum):
+            if not root.left and not root.right:
+                res = res + sum +root.val
+                return
+            if root.left:
+                fuck(root.left, sum + root.val)
+            if root.right:
+                fuck(root.right, sum + root.val)
+
+        res = 0    
+        fuck(root, sum)
+        return res
+    def maxPathSum(self, root):
+        def fuck(root):
+            if not root:
+                return 0
+            lhs = max(0, fuck(root.left))
+            rhs = max(0, fuck(root.right))
+            maxPath[0] = max(maxPath[0], lhs+rhs+root.val)
+  
+            return max(lhs,rhs)+  root.val
+        maxPath = [-2**32]
+        fuck(root)
+        return maxPath[0]
+    def connect(self, root):
+        while root and root.left:
+            cur = root
+            prev = None
+            while cur:
+                if prev:
+                    prev.next = cur.left
+                cur.left.next = cur.right
+                prev = cur.right
+                cur = cur.next
+            root = root.left
+
+            
+
+    def connect(self, root):
+        curFather = root
+        lowLevelHead = None
+        prevBrother = None
+        while curFather:
+            # in one level
+            while curFather:
+                if curFather.left:
+                    if prevBrother:
+                        prevBrother.next = curFather.left
+                    else:
+                        lowLevelHead = curFather.left
+                    prevBrother = curFather.left
+                if curFather.right:
+                    if prevBrother:
+                        prevBrother.next = curFather.right
+                    else:
+                        lowLevelHead = curFather.right
+                    prevBrother = curFather.right
+                curFather = curFather.next
+            #change level
+            curFather = lowLevelHead
+            lowLevelHead = None
+            prevBrother = None
+
+                
+        
+    def flatten(self, root):
+        """
+        :type root: TreeNode
+        :rtype: void Do not return anything, modify root in-place instead.
+        """
+        def fck(root):
+            if not root: return None
+            if not root.right and  not root.left:
+                return root
+            lhs = fck(root.left)
+            tmp = root.right
+            if lhs:
+                root.right = root.left
+                lhs.right = tmp
+            rhs = fck(tmp)
+            return rhs
+
+        fck(root)
+
+
+        def fck(root):
+            if not root: return(None)
+            if not root.right and  not root.left:
+                return root
+            lhs = fck(root.left)
+            rhs = fck(root.right)
+            tmp = root.right 
+            root.right = root.left
+            root.left = None
+            if lhs:
+                lhs.right = tmp
+            else:
+                root.right = tmp
+            return  rhs
+        
+        fck(root)
     def pathSum(self, root, sum):
         """
         :type root: TreeNode
@@ -28,22 +264,18 @@ class Solution(object):
         """
         def fuck(root, sum, lists):
             if not root:
-                return False
+                return 
             a = sum - root.val
-            if not root.left and not root.right
-                if a == 0:
-                    lists.append(root)
-                    res.append(lists)
-                    return True
-                else:
-                    return False
-            if fuck(root.left, a, lists+[root]) or fuck(root.right, a, lists+[root]):
-                return True
-            else:
-                return False
+            lists.append(root.val)
+            if not root.left and not root.right and a == 0:
+                res.append(lists[:])
+            fuck(root.left, a, lists)
+            fuck(root.right, a, lists)
+            lists.pop()
         res =[]
         fuck(root, sum, [])
         return res
+
 
     def hasPathSum(self, root, sum):
         """
@@ -237,8 +469,7 @@ class Solution(object):
             if lhs==None and rhs == None:
                 return True
             if lhs!= None and rhs!= None:
-                return rhs.val==lhs.val and helper(lhs.left,rhs.right) and 
-                helper(lhs.right,rhs.left)
+                return rhs.val==lhs.val and helper(lhs.left,rhs.right) and  helper(lhs.right,rhs.left)
             return False
         if root is None:
             return True 
@@ -1638,4 +1869,4 @@ class Solution(object):
 #     counts[x] = counts.setdefault(x, 0) + 1
 # print counts
 a = Solution()
-print a.solveNQueens(4)
+print a.canJump([2,0,0])
