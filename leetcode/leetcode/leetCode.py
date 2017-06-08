@@ -26,6 +26,196 @@ import Queue
 #         self.next = None
 
 class Solution:
+    def subsetsWithDup(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+class Solution(object):
+    def merge(self, nums1, m, nums2, n):
+        """
+        :type nums1: List[int]
+        :type m: int
+        :type nums2: List[int]
+        :type n: int
+        :rtype: void Do not return anything, modify nums1 in-place instead.
+        """
+        # while m > 0 and n > 0:
+        #     if nums1[m-1] >= nums2[n-1]:
+        #         nums1[m+n-1] = nums1[m-1]
+        #         m -= 1
+        #     else:
+        #         nums1[m+n-1] = nums2[n-1]
+        #         n -= 1
+        # if n > 0:
+        #     nums1[:n] = nums2[:n]        
+
+
+        l = m
+        n = n
+        i, j = 0, 0
+        k= l
+        while i<k and j < n:
+            if nums1[i] < nums2[j]:
+                i+=1
+            else:
+                k1 = k
+                while i < k1:
+                    nums1[k1] = nums1[k1-1]
+                    k1-=1
+                nums1[i] = nums2[j]
+                i+=1
+                j+=1
+                k+=1
+        while j != n:
+            nums1[k] = nums2[j] 
+            k+=1
+            j+=1
+
+    def subsetsWithDup(self, nums):
+        res = [[]]
+        l = 0
+        nums.sort()
+        for i in range(len(nums)):
+            if i == 0 or nums[i-1] != nums[i]:
+                l = len(res)
+            for j in range(len(res)-l, len(res)):
+                res+=[res[j]+[nums[i]]]
+        return res
+        
+
+
+    def numDecodings(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        def isVaild(a):
+            return a != '0'
+        def isVailds(a, b):
+            return a == '1' or (a == '2' and b<= '6')
+        n = len(s)
+        if n == 0 or not isVaild(s[0]): return 0
+        if n == 1: return 1
+        fib1 = 1
+        fib2 = 1
+        res = 0
+        for i in range(1, n):
+            first = isVaild(s[i])
+            second = isVailds(s[i-1], s[i])
+            if first and second: res =  fib1 +fib2
+            if not first and not second: return 0
+            if not first and second: res = fib2
+            if first and not second: res =  fib1
+            fib2 = fib1
+            fib1 = res
+            res = 0
+        return fib1
+
+
+
+    def reverseBetween(self, head, m, n):
+        """
+        :type head: ListNode
+        :type m: int
+        :type n: int
+        :rtype: ListNode
+        """
+        if m == n:
+            return head
+        dummyNode = ListNode(0)
+        dummyNode.next = head
+        pre = dummyNode
+        
+        for i in range(m-1):
+            pre = pre.next
+
+        cur = pre.next
+        prev = None
+        for i in range(n - m + 1):
+            next = cur.next
+            cur.next = prev
+            prev = cur
+            cur = next
+        pre.next.next = cur
+        pre.next = prev
+
+        return dummyNode.next
+
+
+    def deleteDuplicates(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if not head: return head
+        prevnode = head
+        heads = head.next
+        while heads:
+            if prevnode.val == heads.val:
+                prevnode.next = heads.next
+            else:
+                prevnode = heads
+            heads = heads.next
+        return head
+          
+
+    def sortColors(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: void Do not return anything, modify nums in-place instead.
+        """
+        l = len(nums)
+        i, j, k = 0, 0, 0
+        while k!= l:
+            if nums[k] == 0:
+                nums[k] = 2
+                nums[j] = 1
+                nums[i] = 0
+                i+=1
+                j+=1          
+            elif nums[k] == 1:
+                nums[k] = 2
+                nums[j] = 1
+                j+=1
+            elif nums[k] == 2:
+                pass
+            k+=1
+
+
+    def canCompleteCircuit(self, gas, cost):
+        """
+        :type gas: List[int]
+        :type cost: List[int]
+        :rtype: int
+        """
+        beg = 0
+        gasSum1 = 0
+        costSum1 = 0
+        gasSum = 0
+        costSum = 0
+        i = 0
+        k = 0
+        n = len(gas)
+        while i <= n-1:
+            gasSum += gas[i]
+            costSum += cost[i]
+            if costSum>gasSum:
+                k = i+1
+                gasSum = 0
+                costSum = 0
+
+            gasSum1 +=gas[i]
+            costSum1+=cost[i]
+            i+=1   
+        if costSum1 > gasSum1:
+            return -1
+        return k
+
+
+
+
+
     def jump(self, nums):
         """
         :type nums: List[int]
@@ -1869,4 +2059,4 @@ class Solution:
 #     counts[x] = counts.setdefault(x, 0) + 1
 # print counts
 a = Solution()
-print a.canJump([2,0,0])
+print a.subsetsWithDup([1,3,3,3])
