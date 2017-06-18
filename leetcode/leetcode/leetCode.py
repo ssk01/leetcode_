@@ -26,11 +26,64 @@ import Queue
 #         self.next = None
 
 class Solution:
+    def singleNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        first = 0
+        second = 0
+        for num in nums:
+            first = (first^num)&(~second)
+            second = (second^num)&(~first)
+        return first
+
+
+
+
+
+    
+    def generateMatrix(self, n):
+        """
+        :type n: int
+        :rtype: List[List[int]]
+        """
+
+    def trailingZeroes(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        return 0 if n == 0 else n/5 + self.trailingZeroes(n/5)
+
+    def combine(self, n, k):
+        """
+        :type n: int
+        :type k: int
+        :rtype: List[List[int]]
+        """
+        def help(i, numsLeft, lists):
+            if numsLeft == 0:
+                res.append(lists)
+                return
+            numsLeft-=1
+            for beg in range(i, n+1):
+                if numsLeft <= n - beg:
+                    help(beg+1, numsLeft, lists+[beg])
+        res = []
+        help(1,k,[])
+        return res
+
+
+
     def subsetsWithDup(self, nums):
         """
         :type nums: List[int]
         :rtype: List[List[int]]
         """
+
+
+
 class Solution(object):
     def merge(self, nums1, m, nums2, n):
         """
