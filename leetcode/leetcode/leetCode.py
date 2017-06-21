@@ -26,6 +26,40 @@ import Queue
 #         self.next = None
 
 class Solution:
+    def minDistance(self, word1, word2):
+        """
+        :type word1: str
+        :type word2: str
+        :rtype: int
+        """
+        l1 = len(word1)
+        l2 = len(word2)
+
+        maps = [[0 for y in range(l2+1) ] for x in range(l1+1)]
+        for i in range(l1+1):
+            maps[i][0] = i
+        for j in range(l2+1):
+            maps[0][j] = j
+        for i in range(1, l1+1):
+            for j in range(1, l2+1):
+                if word1[i-1] == word2[j-1]:
+                    maps[i][j] = maps[i-1][j-1]
+                else:
+                    maps[i][j] = min(maps[i-1][j-1] + 1,maps[i-1][j] + 1,maps[i][j-1]+1)
+        return maps[l1][l2]
+
+    def removeDuplicates(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        idx = 0
+        for n in nums:
+            if idx < 2 or n > nums[idx-2]:
+                nums[idx] = n
+                idx += 1
+        return idx
+
     def singleNumber(self, nums):
         """
         :type nums: List[int]
@@ -2112,4 +2146,4 @@ class Solution(object):
 #     counts[x] = counts.setdefault(x, 0) + 1
 # print counts
 a = Solution()
-print a.subsetsWithDup([1,3,3,3])
+print a.minDistance("a","b")
