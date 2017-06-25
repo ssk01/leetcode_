@@ -25,7 +25,65 @@ import Queue
 #         self.right = None
 #         self.next = None
 
-class Solution:
+class Solution(object):
+    def numDistinct(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: int
+        """
+        s1 = len(s)
+        t1 = len(t)
+
+        dp = [[0 for x in range(s1+1)] for y in range(t1+1)]
+        for i in range(s1+1):
+            dp[0][i] = 1
+        for i in range(1, t1+1):
+            for j in range(1, s1+1):
+                dp[i][j] = dp[i][j-1]
+                dp[i][j] = dp[i][j]+ dp[i-1][j-1]  if t[i-1] == s[j-1] else  0
+        return dp[t1][s1]           
+                
+
+
+    def __init__(self):
+        self.dummyNode = ListNode(0)
+    def sortList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        def merge( l1,  l2,dummyNode):
+            dummyNode.next = None
+            e = dummyNode
+            while l1 and l2:
+                if l1.val <= l2.val:
+                    e.next = l1
+                    l1 = l1.next
+                else:
+                    e.next = l2
+                    l2 = l2.next
+                e = e.next
+            if l1:
+                e.next = l1
+            if l2:
+                e.next = l2
+                
+            return dummyNode.next
+        if not head or not head.next:
+            return head
+        slow = head
+        fast = head.next
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        mid = slow.next
+        slow.next = None
+        return merge(self.sortList(head), self.sortList(mid),self.dummyNode)
+
+
+
+
     def minDistance(self, word1, word2):
         """
         :type word1: str
@@ -2146,4 +2204,4 @@ class Solution(object):
 #     counts[x] = counts.setdefault(x, 0) + 1
 # print counts
 a = Solution()
-print a.minDistance("a","b")
+print a.sortList("a","b")
