@@ -2,10 +2,10 @@
 import collections
 
 # Definition for singly-linked list.
-# class ListNode(object):
-#     def __init__(self, x):
-#         self.val = x
-#         self.next = None
+class ListNode(object):
+    def __init__(self, x):
+        self.val = x
+        self.next = None
 
 
 # import random
@@ -26,6 +26,179 @@ import Queue
 #         self.next = None
 
 class Solution(object):
+    def wordBreak(self, s, wordDict):
+        """
+        :type s: str
+        :type wordDict: List[str]
+        :rtype: bool
+        """
+        if not wordDict: return False
+        l = len(s)
+        d = [False] * (l+1)
+        d[0]= [True]
+        for i in range(l):
+            for w in wordDict:
+                if w == s[i-len(w)+1:i+1] and d[i-len(w)+1]:
+                    d[i+1] = True
+                    break
+        return d[l]
+
+
+    def evalRPN(self, tokens):
+        """
+        :type tokens: List[str]
+        :rtype: int
+        """
+        a1 = 0
+        a2 = 0
+        res = 0
+        stk =[]
+        i = 0
+        lens = len(tokens)
+        while i < lens:
+            opr = tokens[i]
+            if opr == '-' or opr =='/' or opr == '+' or opr == '*':
+                a1 = stk.pop()
+                a2 = stk.pop()
+                if opr =='-': res = a2-a1
+                elif opr == '+': res = a2+a1
+                elif opr == '*': res = a2*a1
+                elif opr == '/': res = a2/a1
+                stk.append(res)
+            else:
+                stk.append(int(opr))    
+            i+=1
+        print stk
+        return stk[0]
+
+    def partition(self, s):
+        res =[]
+        lens = len(s)
+        def fuckhel( idx, tmp):
+ 
+            if idx == lens: 
+                res.append(tmp[:])
+                return
+            for i in range(idx, lens):
+                if idx > 0:
+                    if s[idx:i+1] == s[i:idx-1:-1]: 
+                        tmp.append(s[idx:i+1])
+                        fuckhel(i+1,tmp)
+                        tmp.pop()
+                elif idx == 0 and s[idx:i+1] == s[i::-1]: 
+                    tmp.append(s[idx:i+1])
+                    fuckhel(i+1,tmp)
+                    tmp.pop()
+        fuckhel(0,[])
+        return res
+
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+        if not prices: return 0
+        res = 0
+        big = 0
+        small = prices[0]
+        for fee in prices:
+            if fee < small:
+                small = fee
+            else:
+                res = max(res, fee-small)
+        return res
+    # def partition(self, s):
+    #     """
+    #     :type s: str
+    #     :rtype: List[List[str]]
+    #     """
+    #     res =[]
+    #     def fuckhel(ss, idx, tmp):
+    #         lens = len(ss)
+    #         if idx == lens: 
+    #             res.append(tmp[:])
+    #             return
+    #         for i in range(idx, lens):
+    #             if ss[idx:i+1] == ss[i:idx-1:-1]: 
+    #                 tmp.append(ss[idx:i+1])
+    #                 fuckhel(ss,i+1,tmp)
+    #                 tmp.pop()
+    #     fuckhel(s,0,[])
+    #     return res
+
+        # def imp(s,cache):
+        #     if not cache.has_key(s):
+        #         ret = [[s[:i]] + item for i in xrange(1,len(s)) \
+        #             for item in imp(s[i:],cache) if s[:i] == s[i-1::-1]]
+        #         cache[s] = ret if ret else[[]]  
+        #     return cache[s]
+        # return imp(s,{})
+        # ret = []
+        # for i in range(1, len(s)+1):
+        #     if s[:i] == s[i-1::-1]:
+        #         for res in self.partition(s[i:]):
+        #             ret.append([s[:i]] + res)
+        #         # ret+=[s[:i]] +res  for res in self.partition(s[i:]))
+                
+        # if not ret:
+        #     return [[]]
+        # return ret
+
+
+
+    def getRow(self, rowIndex):
+        """
+        :type rowIndex: int
+        :rtype: List[int]
+        """
+        res = [1 for x in range(rowIndex+1)]
+        tmp = 0
+        pre =0
+        for i in range(0,rowIndex):
+            pre = 1
+            for j in range(i):
+                tmp = res[j+1]
+                res[j+1]+=pre
+                pre = tmp
+        return res
+
+
+
+    def minimumTotal(self, triangle):
+        """
+        :type triangle: List[List[int]]
+        :rtype: int
+        """
+        if not triangle:
+            return 0
+        len1 = len(triangle)
+        for i in range(len1-2,-1,-1):
+            for j in range(0, i+1):
+                triangle[i][j] += min(triangle[i+1][j],triangle[i+1][j+1])
+        return triangle[0][0]
+    def insertionSortList(self, head):
+        dummyNode = ListNode(0)
+        nexts=None
+        cur = head
+        pre = dummyNode
+        while cur:
+            if pre.next and cur.val < pre.next.val:
+                pre = dummyNode
+            while pre.next and pre.next.val < cur.val:
+                pre = pre.next
+            nexts = cur.next
+            cur.next = pre.next
+            pre.next = cur
+            cur = nexts
+            # pre = dummyNode
+        return dummyNode.next
+
+
+
+
+
+
+
     def numDistinct(self, s, t):
         """
         :type s: str
@@ -35,15 +208,23 @@ class Solution(object):
         s1 = len(s)
         t1 = len(t)
 
-        dp = [[0 for x in range(s1+1)] for y in range(t1+1)]
-        for i in range(s1+1):
-            dp[0][i] = 1
-        for i in range(1, t1+1):
-            for j in range(1, s1+1):
-                dp[i][j] = dp[i][j-1]
-                dp[i][j] = dp[i][j]+ dp[i-1][j-1]  if t[i-1] == s[j-1] else  0
-        return dp[t1][s1]           
-                
+        # dp = [[0 for x in range(s1+1)] for y in range(t1+1)]
+        # for i in range(s1+1):
+        #     dp[0][i] = 1
+        # for i in range(1, t1+1):
+        #     for j in range(1, s1+1):
+        #         dp[i][j] = dp[i][j-1]
+        #         dp[i][j] = dp[i][j]+ dp[i-1][j-1]  if t[i-1] == s[j-1] else  0
+        # return dp[t1][s1]           
+        dp = [0,]*(t1+1)
+        for j in range(1, s1+1):
+            pre = 1
+            for i in range(1, t1+1):
+                tmp = dp[i]
+                dp[i] += pre if t[i-1] == s[j-1] else 0
+                pre = tmp
+
+        return dp[t1]
 
 
     def __init__(self):
@@ -176,7 +357,7 @@ class Solution(object):
 
 
 
-class Solution(object):
+
     def merge(self, nums1, m, nums2, n):
         """
         :type nums1: List[int]
@@ -2204,4 +2385,6 @@ class Solution(object):
 #     counts[x] = counts.setdefault(x, 0) + 1
 # print counts
 a = Solution()
-print a.sortList("a","b")
+
+
+print a.evalRPN(["10","6","9","3","+","-11","*","/","*","17","+","5","+"])
