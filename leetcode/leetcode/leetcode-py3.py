@@ -1,4 +1,78 @@
 class Solution(object):
+    def uniquePathsWithObstacles(self, obstacleGrid):
+        """
+        :type obstacleGrid: List[List[int]]
+        :rtype: int
+        """
+        if not obstacleGrid: return 0
+        rows = len(obstacleGrid)
+        cols = len(obstacleGrid[0])
+        first = True
+        if obstacleGrid[rows-1][cols-1] == 1:
+            return 0
+        for j in range(cols-1, -1, -1):
+            if first and obstacleGrid[rows-1][j] == 0:
+                obstacleGrid[rows-1][j]=1
+            else:
+                first = False
+                obstacleGrid[rows-1][j] = 0
+        first= True
+        for i in range(rows-2, -1, -1):
+            if first and obstacleGrid[i][cols-1] == 0:
+                obstacleGrid[i][cols-1] = 1
+            else:
+                first = False
+                obstacleGrid[i][cols-1] = 0
+                
+        for j in range(cols-2, -1, -1):
+            for i in range(rows-2, -1, -1):
+                if obstacleGrid[i][j] == 1:
+                    obstacleGrid[i][j] = 0
+                else:
+                    obstacleGrid[i][j]= obstacleGrid[i][j+1] + \
+                        obstacleGrid[i+1][j]
+        return obstacleGrid[0][0]
+    def lengthOfLastWord(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        if not s: return 0
+        lens = len(s)
+        res = 0
+        k= lens-1
+        while k>=0:
+            if s[k]==' ':
+                k-=1
+            else:
+                break
+        while k>=0:
+            if s[k]==' ':
+                break
+            res+=1
+            k-=1
+        return res
+            
+            
+    def longestConsecutive(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        res = 0
+        maps = {}
+        sums = 0
+        for i in nums:
+            if i not in maps:
+                left = maps.get(i-1,0)
+                right = maps.get(i+1,0)
+                sum = left + right + 1
+                res = max(sum, res)
+                maps[i] = sum
+                maps[i-left] = sum
+                maps[i+right] = sum
+        return res
+
     def simplifyPath(self, path):
         """
         :type path: str
@@ -73,4 +147,4 @@ class Solution(object):
         return mat
 
 test = Solution()
-print(test.candy([2,1]))
+print(test.uniquePathsWithObstacles([[0],[1]]))
