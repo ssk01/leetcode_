@@ -8,7 +8,256 @@ class Interval(object):
         self.start = s
         self.end = e
 
+
+
 class Solution(object):
+    
+    def countPrimes(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        if n < 3:
+            return 0
+        primes = [0, 1]*(n/2)
+
+        if n % 2 != 0:
+            primes.append(0)
+        primes[1] = 0
+        primes[2] = 1
+        for i in range(2,int(n**0.5)+1):
+            if primes[i]:
+                for j in range(i*i, n, i):
+                    primes[j] = 0
+        return sum(primes)
+            
+            
+    # def countPrimes(self, n):
+    #     """
+    #     :type n: int
+    #     :rtype: int
+    #     """
+    #     if n < 7:
+    #         if n == 3: return 1
+    #         if n == 1 or n == 0 or n == 2: return 0
+    #         if n == 6: return 3
+    #         return 2
+    #     primes = [2,3,5]
+    #     isPrimes = True
+    #     for i in range(7,n,2):
+    #         isPrimes = True
+    #         half = i**0.5
+    #         for num in primes:
+    #             if num <= half and i % num == 0:
+    #                 isPrimes = False
+    #                 break
+    #         if isPrimes == True:
+    #             primes.append(i)
+    #     return len(primes)    
+
+    def compareVersion(self, version1, version2):
+        """
+        :type version1: str
+        :type version2: str
+        :rtype: int
+        """
+        f1 =[x for x in version1.split('.')]       
+        f2 =[x for x in version2.split('.')]
+        i = 0
+        while i < len(f1) and i <len(f2):
+            if int(f1[i]) > int(f2[i]):
+                return 1
+            if int(f1[i]) < int(f2[i]):
+                return -1
+            i+=1
+        while i < len(f1):
+            if int(f1[i]) > 0:
+                return 1
+            i+=1
+        while i < len(f2):
+            if int(f2[i]) > 0:
+                return -1
+            i+=1
+        return 0
+
+    def restoreIpAddresses(self, s):
+        """
+        :type s: str
+        :rtype: List[str]
+        """
+        def confirm(i, j):
+            if j == 3:
+                if s[i] not in '12': return False
+                if s[i] in '2':
+                    if s[i+1] >'5':
+                        return False
+                    if s[i+1] == '5' and s[i+2] >'5':
+                        return False
+                    
+            elif j == 2:
+                return s[i] != '0'
+            return True
+        lens = len(s)
+        res = []
+        for i in range(1,4):
+            if  lens -i <= 9 and lens - i >= 3 and confirm(0,i):
+                for j in range(1,4):
+                    if lens - i -j <= 6 and lens -i -j >= 2 and confirm(i, j):
+                        for k in range(1,4):
+                            if lens - i - j - k <= 3 and  lens -i -j - k >= 1 and confirm(i+j, k):
+                                m = lens - i - j - k
+                                if confirm(i+j+k, m):
+                                    res.append(s[0:i]+"."+s[i:j+i]+"."+s[j+i:j+i+k]+"."+s[j+i+k:lens])
+        return res
+    
+    
+    def reverseWords(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        lists = [x for x in s.split(' ') if x != '']
+        if len(lists) == 0: return ""
+        if len(lists) == 1: return lists[0]
+        else:
+            lists = [lists[-1]]+lists[:len(lists)-1]
+            return " ".join(lists)
+        
+                    
+    def numIslands(self, grid):
+        """
+        :type grid: List[List[str]]
+        :rtype: int
+        """
+        if not grid: return 0
+        res = 0
+        rows = len(grid)
+        cols = len(grid[0])
+        def fuck(i,j):
+            if i>= 0 and i <rows and j>=0 and j < cols and grid[i][j] == 1:
+                grid[i][j] = 0
+                fuck(i, j-1)
+                fuck(i, j+1)
+                fuck(i+1, j)
+                fuck(i-1, j)
+        for i in range(rows):
+            for j in range(cols):
+                if grid[i][j] == 1:
+                    fuck(i,j)
+                    res+=1
+        return res
+    def findRestaurant(self, list1, list2):
+        """
+        :type list1: List[str]
+        :type list2: List[str]
+        :rtype: List[str]
+        """
+        maps = {}
+        for i in range(len(list1)):
+            maps[list1[i]] = i
+        idxSum = len(list1)+len(list2)
+        idx = []
+        for j in range(len(list2)):
+            if list2[j] in maps:
+                maps[list2[j]] +=j
+                if idxSum > maps[list2[j]]:
+                    idx=[]
+                    idx.append(j)
+                    idxSum = maps[list2[j]]
+                elif idxSum == maps[list2[j]]:
+                    idx.append(j)
+        res = []
+        for i in idx:
+            res.append(list2[i])
+        return res
+            
+
+
+
+
+    def largestNumber(self, nums):
+        # @param {integer[]} nums
+        # @return {string}
+        num = [str(x) for x in nums]
+        num.sort(cmp=lambda x, y: cmp(y+x,x+y))
+        return "0" if num and num[0] == "0" else "".join(num)
+
+
+
+
+    def findPeakElement(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        pre = -2**32
+        nums.append(pre)
+        for i in range(len(nums)-1):
+            if nums[i]>pre and nums[i]>nums[i+1]:
+                return i
+            pre = nums[i]
+
+            
+    def maxProduct(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        res = nums[0]
+        maxs = res
+        mins = res
+        for i in range(1,len(nums)):
+            if nums[i] < 0:
+                maxs, mins = mins, maxs
+            maxs = max(nums[i],nums[i]*maxs)
+            mins = min(nums[i],nums[i]*mins)
+            res = max(res, maxs)
+        return res
+
+    def maximumGap(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if len(nums)<2:return 0
+        nums.sort()
+        res = 0
+        pre = nums[0]
+        for num in nums:
+            res = max(num-pre,res)
+            pre = num
+        return res
+        
+    def findMin(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if not nums: return 0
+        beg = 0
+        end = len(nums)-1
+        while beg < end:
+            if nums[beg]<nums[end]:
+                return nums[beg]
+            else:
+                mid = (beg+end)//2
+                if nums[mid] > nums[end]:
+                    beg = mid + 1
+                elif nums[mid] < nums[end]:
+                    end = mid
+                else:
+                    end-=1
+        return nums[end]
+                    
+
+
+
+
+
+
+
+
+
     def findMin(self, nums):
         """
         :type nums: List[int]
@@ -50,46 +299,87 @@ class Solution(object):
             m |= n&1
             n>>=1
         return m
+
+
     def findWords(self, board, words):
-        """
-        :type board: List[List[str]]
-        :type words: List[str]
-        :rtype: List[str]
-        """
-        res = []
-        maps = []
-        def exist( board, word):
-            if not board: return False
-            rows = len(board)
-            cols = len(board[0])
-            size = len(word)
-            t =  '\0'
-            def fcuk(i, x, y):
-                if i == size:
-                    return (True,0)
-                if x>=rows or x<0 or y>=cols or y <0 or word[i]!=board[x][y]:
-                    return (False,i+1)
-                t = board[x][y]
-                board[x][y]='\0'
-                if fcuk(i+1,x+1,y) or fcuk(i+1,x,y+1) or fcuk(i+1,x-1,y) or fcuk(i+1,x, y-1):
-                    board[x][y] = t
-                    return (True,i+1)
-                else:
-                    board[x][y] = t
-                return (False,i)
-            for pre in maps:
-                if word.find(pre) != -1:
-                    return 
-                
-            for i in range(rows):
-                for j in range(cols):
-                    if fcuk(0,i,j):
-                        res.append(word)
-                        return
+        trie = {}
         for w in words:
-            if w not in res:
-                exist(board, w)
+            t = trie
+            for c in w:
+                if c not in t:
+                    t[c] = {}
+                t = t[c]
+            t['#'] = w
+        res = []
+        rows = len(board)
+        cols = len(board[0])
+        boolarray = [[True for _ in range(cols)] for _ in range(rows)]
+        def dfs(i, j , tries):
+            if not boolarray[i][j]:
+                return
+            if board[i][j] not in tries:
+                return
+            boolarray[i][j] = False
+            tmp = board[i][j]            
+            next_tries = tries[tmp]
+            if '#' in next_tries and next_tries['#'] != '#':
+                res.append(next_tries['#'])
+                next_tries['#'] = '#'
+            if i - 1 >= 0:  dfs(i-1, j, next_tries)
+            if i + 1 < rows:  dfs(i+1, j, next_tries)
+            if j - 1 >= 0:  dfs(i, j-1, next_tries)
+            if j + 1 < cols:  dfs(i, j+1, next_tries)
+            boolarray[i][j] = True
+
+        for i in range(rows):
+            for j in range(cols):
+                dfs(i, j, trie)    
         return res
+
+
+
+
+
+    # def findWords(self, board, words):
+    #     """
+    #     :type board: List[List[str]]
+    #     :type words: List[str]
+    #     :rtype: List[str]
+    #     """
+    #     res = []
+    #     maps = []
+    #     def exist( board, word):
+    #         if not board: return False
+    #         rows = len(board)
+    #         cols = len(board[0])
+    #         size = len(word)
+    #         t =  '\0'
+    #         def fcuk(i, x, y):
+    #             if i == size:
+    #                 return (True,0)
+    #             if x>=rows or x<0 or y>=cols or y <0 or word[i]!=board[x][y]:
+    #                 return (False,i+1)
+    #             t = board[x][y]
+    #             board[x][y]='\0'
+    #             if fcuk(i+1,x+1,y) or fcuk(i+1,x,y+1) or fcuk(i+1,x-1,y) or fcuk(i+1,x, y-1):
+    #                 board[x][y] = t
+    #                 return (True,i+1)
+    #             else:
+    #                 board[x][y] = t
+    #             return (False,i)
+    #         for pre in maps:
+    #             if word.find(pre) != -1:
+    #                 return 
+                
+    #         for i in range(rows):
+    #             for j in range(cols):
+    #                 if fcuk(0,i,j):
+    #                     res.append(word)
+    #                     return
+    #     for w in words:
+    #         if w not in res:
+    #             exist(board, w)
+    #     return res
         
     def wordBreak(self, s, wordDict):
         """
@@ -480,6 +770,107 @@ class Solution(object):
 
         return mat
 
+
+class MinStack(object):
+    
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.stk = []
+        self.min = 2**31-1
+
+    def push(self, x):
+        """
+        :type x: int
+        :rtype: void
+        """
+        self.stk.append(x)
+        if x < self.min:
+            self.min = x
+    def pop(self):
+        """
+        :rtype: void
+        """
+        tmp = self.stk.pop()
+        if tmp == self.min:
+            if self.stk:
+                res = self.stk[0]
+                for nums in self.stk:
+                    if res > nums:
+                        res = nums
+                self.min = res
+            else:
+                self.min = 2**31-1
+    def top(self):
+        """
+        :rtype: int
+        """
+        return self.stk[len(self.stk)-1]
+    def getMin(self):
+        """
+        :rtype: int
+        """
+        if not self.stk: return 
+        return self.min
+
+
+
+
+# Your MinStack object will be instantiated and called as such:
+# obj = MinStack()
+# obj.push(x)
+# obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.getMin()
+
+class WordDictionary(object):
+    
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root={}
+
+    def addWord(self, word):
+        """
+        Adds a word into the data structure.
+        :type word: str
+        :rtype: void
+        """
+        root = self.root
+        for c in word:
+            root = root.setdefault(c, {})
+        root['#'] = '#'
+
+    def search(self, word):
+        """
+        Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter.
+        :type word: str
+        :rtype: bool
+        """
+        def help(root, i):
+            if i == len(word): return '#' in root
+            if word[i] != '.':
+                if word[i] not in root:
+                    return False
+                else:
+                    root = root[word[i]]
+                    return help(root, i+1)
+            else:
+                for nodes in root.values():
+                    if nodes != '#' and help(nodes, i+1):
+                        return True
+                return False
+        return help(self.root, 0)
+                
+        
+
+
+# Your WordDictionary object will be instantiated and called as such:
+# obj = WordDictionary()
+# obj.addWord(word)
+# param_2 = obj.search(word)
 test = Solution()
 # rr = Interval(2,5)
 # l1 = Interval(1,3)
@@ -487,4 +878,4 @@ test = Solution()
 # l=[]
 # l.append(l1)
 # l.append(l2)
-print(test.wordBreak("catsanddog",["cat","cats","and","sand","dog"]))
+print(test.countPrimes(5))
