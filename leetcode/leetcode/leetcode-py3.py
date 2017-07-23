@@ -1,3 +1,4 @@
+from collections import deque
 # Definition for singly-linked list.
 class ListNode(object):
     def __init__(self, x):
@@ -11,7 +12,149 @@ class Interval(object):
 
 
 class Solution(object):
-    
+    def findLadders(self, beginWord, endWord, wordList):
+        """
+        :type beginWord: str
+        :type endWord: str
+        :type wordList: List[str]
+        :rtype: List[List[str]]
+        """
+        def construct_dict(word_list):
+            d = {}
+            for word in word_list:
+                for i in range(len(word)):
+                    s = word[:i]+"_"+word[i+1:]
+                    d[s] = d.get(s, []) + [word]
+            return d
+        lens = 0
+        res = []
+        if endWord not in wordList: return 0
+        if beginWord not in wordList: wordList.append(beginWord)
+
+        dict_words = construct_dict(wordList)
+
+        queue, visted = deque([(beginWord, 1,[beginWord])]), set()
+        maps ={1:set([beginWord])}
+
+        l = 0
+        while queue:
+            print(queue)
+            word, steps, paths = queue.popleft()
+            if word == endWord:
+                res.append(paths)
+                lens = steps
+                break
+            if l != lens:
+                for vals in maps.values():
+                    visted.add(vals)
+                l = lens
+            if word not in visted:
+                for i in range(len(word)):
+                    s = word[:i]+"_"+word[i+1:]
+                    next_words = dict_words.get(s, [])
+                    for nexts in next_words:
+                        if nexts != word and nexts not in visted:
+                            queue.append((nexts, steps+1, paths+[nexts]))
+                            tmp = maps.setdefault(steps,set())
+                            tmp.add(nexts)
+        while queue:
+            word, steps, paths = queue.popleft()
+            if steps != lens:
+                break
+            if word == endWord:
+                res.append(paths)
+        return res
+        #TTTTTLLLLLEEEEE
+        # if endWord not in wordList: return []
+        # queue = deque([[beginWord,1, [beginWord]]])
+        # res = []
+        # pathLens = -1
+        # uppercase = "abcdefghijklmnopqrstuvwxyz"
+        # dicts = set(wordList)
+        # maps={}
+        # l = 1
+        # while queue:
+        #     word, lens, paths= queue.popleft()
+        #     if l != lens:
+        #         for val in maps[l]:
+        #             dicts.remove(val)
+        #         l = lens
+        #     if word == endWord:
+        #         res.append(paths)
+        #         pathLens = len(paths)
+        #         break
+        #     for i in range(len(word)):
+        #         for c in uppercase:
+        #             next_words = word[:i] + c + word[i+1:]
+        #             # if next_words == endWord:
+        #                 # queue.append([next_words,l+1,paths+[next_words]])
+        #             if next_words in dicts:
+        #                 tmp = maps.setdefault(l,set())
+        #                 tmp.add(next_words)
+        #                 queue.append([next_words,l+1,paths+[next_words]])
+        # while queue:
+        #     word, lens,paths = queue.popleft()
+        #     if pathLens == lens:
+        #         if word == endWord:
+        #             res.append(paths)
+        #     else:
+        #         break
+        # return res
+
+
+
+    # def ladderLength(self, beginWord, endWord, wordList):
+    #     if endWord not in wordList: return 0
+    #     queue = deque([(beginWord, 1)])
+    #     uppercase = "abcdefghijklmnopqrstuvwxyz"
+    #     dicts = set(wordList)
+    #     while queue:
+    #         word, steps = queue.popleft()
+    #         if word == endWord:
+    #             return steps
+    #         for i in range(len(word)):
+    #             for c in uppercase:
+    #                 next_words = word[:i] + c + word[i+1:]
+    #                 if next_words in dicts:
+    #                     dicts.remove(next_words)
+    #                     queue.append((next_words, steps+1))
+    #     return 0
+
+
+    def ladderLength(self, beginWord, endWord, wordList):
+        """
+        :type beginWord: str
+        :type endWord: str
+        :type wordList: List[str]
+        :rtype: int
+        """
+        def construct_dict(word_list):
+            d = {}
+            for word in word_list:
+                for i in range(len(word)):
+                    s = word[:i]+"_"+word[i+1:]
+                    d[s] = d.get(s, []) + [word]
+            return d
+        def bfs_words(beg, end, dict_words):
+            queue, visted = deque([(beg, 1)]), set()
+            while queue:
+                word, steps = queue.popleft()
+                if word not in visted:
+                    visted.add(word)
+                    if word == end:
+                        return steps
+                    for i in range(len(word)):
+                        s = word[:i]+"_"+word[i+1:]
+                        next_words = dict_words.get(s, [])
+                        for nexts in next_words:
+                            if nexts not in visted:
+                                queue.append((nexts, steps+1))
+            return 0
+        if endWord not in wordList: return 0
+        if beginWord not in wordList: wordList.append(beginWord)
+        dicts = construct_dict(wordList)
+        return bfs_words(beginWord, endWord, dicts)
+
     def countPrimes(self, n):
         """
         :type n: int
@@ -878,4 +1021,5 @@ test = Solution()
 # l=[]
 # l.append(l1)
 # l.append(l2)
-print(test.countPrimes(5))
+# print(test.findLadders("red","tax",["ted","tex","red","tax","tad","den","rex","pee"]))
+print(test.findLadders("hot","dog",["hot","dog"]))
