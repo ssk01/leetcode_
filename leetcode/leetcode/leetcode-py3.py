@@ -12,6 +12,120 @@ class Interval(object):
 
 
 class Solution(object):
+    def largestRectangleArea(self, heights):
+        """
+        :type heights: List[int]
+        :rtype: int
+        """
+        if not heights: return 0
+        left = self.left(heights)
+        right = self.right(heights)
+        res = 0
+        tmp = 0
+        for i in range(heights):
+            tmp = heights[i]*(left[i] + right[i] + 1)
+            res = max(res, tmp)
+        return res
+
+    def left(self, heights):
+        distance = [0]*len(heights)
+        for i in range(len(heights)):
+            j = i -1
+            t = 0
+            while j >= 0:
+                if heights[i] <= heights[j]:
+                    t = t + distance[j] + 1
+                    j = j - distance[j] - 1
+                else:
+                    break
+            distance[i] = t
+        return distance
+    def right(self,heights):
+        distance = [0]*len(heights)
+        for i in range(len(heights)-1,-1,-1):
+            t = 0
+            j = i+1
+            while j < len(heights):
+                if heights[i]<=heights[j]:
+                    t = t + distance[j] + 1
+                    j = j + distance[j] + 1
+                else: 
+                    break
+                j+=1                
+            # for j in range(i+1,len(heights)):
+            #     if heights[i]<=heights[j]:
+            #         t+=1
+            #     else:
+            #         break
+            distance[i] = t
+        return distance
+            
+                
+
+    def removeDuplicateLetters(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        #left to right
+        # before one use up . the small one
+        if not s: return ''
+        dicts = {}
+        visted = {}
+        result = "0"
+
+        for c in 'abcdefghijklmnopqrstuvwxyz':
+            dicts[c] = 0
+            visted[c] = False
+        for c in s:
+            dicts[c]+=1
+
+        for c in s:
+            dicts[c]-=1
+            if (visted[c]):
+                continue
+            while c < result[-1] and dicts[result[-1]]:
+                visted[result[-1]] = False
+                result=result[:-1]
+            result += c
+            visted[c] = True
+        return result[1:]
+        
+        
+
+    def isScramble(self, s1, s2):
+        """
+        :type s1: str
+        :type s2: str
+        :rtype: bool
+        """
+        lens = len(s1)
+        if lens<=3 and s1 == s2:
+            return True        
+        count ={}
+        for i in range(lens):
+            if s1[i] not in count:
+                count[s1[i]] = 0
+            count[s1[i]] += 1
+            if s2[i] not in count:
+                count[s2[i]] = 0
+            count[s2[i]] -= 1
+        for val in count.values():
+            if val != 0:
+                return False
+        for i in range(1,lens):
+            if self.isScramble(s1[:i], s2[:i]) and self.isScramble(s1[i:], s2[i:]):
+                return True
+            if self.isScramble(s1[:i], s2[lens-i:]) and self.isScramble(s1[i:], s2[:lens-i]):
+                return True
+        return False
+
+
+
+
+
+
+
     def findLadders(self, beginWord, endWord, wordList):
         """
         :type beginWord: str
@@ -20,15 +134,31 @@ class Solution(object):
         :rtype: List[List[str]]
         """
         def construct_dict(word_list):
+            def compare(lhs, rhs):
+                k = 0
+                for i in range(len(lhs)):
+                    if lhs[i] != rhs[i]:
+                        k+=1
+                    if k > 1:
+                        return -1
+                return k
             d = {}
-            for word in word_list:
-                for i in range(len(word)):
-                    s = word[:i]+"_"+word[i+1:]
-                    d[s] = d.get(s, []) + [word]
+            
+            for lhs in word_list:
+                for rhs in word_list:
+                    if compare(lhs,rhs) == 1:
+                        tmp = d.setdefault(lhs, set())
+                        tmp.add(rhs)
+                        tmp = d.setdefault(rhs, set())
+                        tmp.add(lhs)
+                        
+                # for i in range(len(word)):
+                #     s = word[:i]+"_"+word[i+1:]
+                #     d[s] = d.get(s, []) + [word]
             return d
         lens = 0
         res = []
-        if endWord not in wordList: return 0
+        if endWord not in wordList: return []
         if beginWord not in wordList: wordList.append(beginWord)
 
         dict_words = construct_dict(wordList)
@@ -38,25 +168,23 @@ class Solution(object):
 
         l = 0
         while queue:
-            print(queue)
+            # print(queue)
             word, steps, paths = queue.popleft()
             if word == endWord:
                 res.append(paths)
                 lens = steps
                 break
             if l != lens:
-                for vals in maps.values():
+                for vals in maps:
                     visted.add(vals)
                 l = lens
             if word not in visted:
-                for i in range(len(word)):
-                    s = word[:i]+"_"+word[i+1:]
-                    next_words = dict_words.get(s, [])
-                    for nexts in next_words:
-                        if nexts != word and nexts not in visted:
-                            queue.append((nexts, steps+1, paths+[nexts]))
-                            tmp = maps.setdefault(steps,set())
-                            tmp.add(nexts)
+                next_words = dict_words.get(word, [])
+                for nexts in next_words:
+                    if nexts != word and nexts not in visted:
+                        queue.append((nexts, steps+1, paths+[nexts]))
+                        tmp = maps.setdefault(steps,set())
+                        tmp.add(nexts)
         while queue:
             word, steps, paths = queue.popleft()
             if steps != lens:
@@ -64,6 +192,55 @@ class Solution(object):
             if word == endWord:
                 res.append(paths)
         return res
+
+        #tle
+        # def construct_dict(word_list):
+        #     d = {}
+        #     for word in word_list:
+        #         for i in range(len(word)):
+        #             s = word[:i]+"_"+word[i+1:]
+        #             d[s] = d.get(s, []) + [word]
+        #     return d
+        # lens = 0
+        # res = []
+        # if endWord not in wordList: return 0
+        # if beginWord not in wordList: wordList.append(beginWord)
+
+        # dict_words = construct_dict(wordList)
+
+        # queue, visted = deque([(beginWord, 1,[beginWord])]), set()
+        # maps ={1:set([beginWord])}
+
+        # l = 0
+        # while queue:
+        #     word, steps, paths = queue.popleft()
+        #     if word == endWord:
+        #         res.append(paths)
+        #         lens = steps
+        #         break
+        #     if l != lens:
+        #         for vals in maps.values():
+        #             visted.add(vals)
+        #         l = lens
+        #     if word not in visted:
+        #         for i in range(len(word)):
+        #             s = word[:i]+"_"+word[i+1:]
+        #             next_words = dict_words.get(s, [])
+        #             for nexts in next_words:
+        #                 if nexts != word and nexts not in visted:
+        #                     queue.append((nexts, steps+1, paths+[nexts]))
+        #                     tmp = maps.setdefault(steps,set())
+        #                     tmp.add(nexts)
+        # while queue:
+        #     word, steps, paths = queue.popleft()
+        #     if steps != lens:
+        #         break
+        #     if word == endWord:
+        #         res.append(paths)
+        # return res
+
+
+
         #TTTTTLLLLLEEEEE
         # if endWord not in wordList: return []
         # queue = deque([[beginWord,1, [beginWord]]])
@@ -1022,4 +1199,7 @@ test = Solution()
 # l.append(l1)
 # l.append(l2)
 # print(test.findLadders("red","tax",["ted","tex","red","tax","tad","den","rex","pee"]))
-print(test.findLadders("hot","dog",["hot","dog"]))
+# print(test.findLadders("hot","dog",["hot","dog"]))
+# print(test.isScramble('abc','bca'))
+# print(test.removeDuplicateLetters("cbacdcbc"))
+print(test.left([2,3,1,4,4,2]))
