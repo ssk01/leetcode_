@@ -1,4 +1,6 @@
 from collections import deque
+import string
+import collections
 # Definition for singly-linked list.
 class ListNode(object):
     def __init__(self, x):
@@ -10,8 +12,400 @@ class Interval(object):
         self.end = e
 
 
-
 class Solution(object):
+    def longestValidParentheses(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        res = 0
+        stk = [-1]
+        for i in range(len(s)):
+            if s[i] == '(':
+                stk.append(i)
+            else:
+                if stk[-1] != -1 and s[stk[-1]] == '(':
+                    stk.pop()
+                    res = max(res, i - stk[-1])
+                else:
+                    stk.append(i)
+        
+        # stk = []
+        # for i in range(len(s)):
+        #     if s[i] == '(':
+        #         stk.append(i)
+        #     else:
+        #         if stk:
+        #             if s[stk[-1]] == '(':
+        #                 stk.pop()
+        #             else:
+        #                 stk.append(i)
+        #         else:
+        #             stk.append(i)
+        # if not stk:
+        #     return len(s)
+        # else:
+        #     res = 0
+        #     end = len(s)
+        #     beg = 0
+        #     while stk:
+        #         beg = stk[-1]
+        #         stk.pop()
+        #         res = max(res, end - beg - 1)
+        #         end = beg
+        #     res = max(res, beg)
+        #     return res
+            
+
+    def isValid(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        # stk = []
+        # maps={'(':')','{':'}','[':']'}
+        # i = 0
+        # res = 0
+        # tres = 0
+        # for chr in s:
+        #     print(chr)
+        #     if chr == '(' or chr == '[' or chr == '{':
+        #         stk.append(chr)
+        #     else:
+        #         if stk:
+        #             tmp = stk.pop()
+        #             if chr != maps[tmp]:
+        #                 i = 0
+        #                 tres = 0
+        #             else:
+        #                 i += 1
+        #             if not stk:
+        #                 tres= i
+        #                 res = max(res, tres)
+        #         else:
+        #             i = 0
+        #             tres = 0
+        # if stk:
+        #     if tres == 0:
+        #         res = max(res, i)
+            
+        # return res*2
+        
+    def canFinish(self, numCourses, prerequisites):
+        graph = [[] for _ in range(numCourses)]
+        visit = [0 for _ in range(numCourses)]
+        for x, y in prerequisites:
+            graph[y].append(x)
+        def dfs(i):
+            if visit[i] == -1:
+                return False
+            if visit[i] == 1:
+                return True
+            visit[i] = -1
+            for j in graph[i]:
+                if not dfs(j):
+                    return False
+            visit[i] = 1
+            return True
+        for i in range(numCourses):
+            if not dfs(i):
+                return False
+        return True
+
+        # tu = {}
+        # for i in range(len(prerequisites)):
+        #     if prerequisites[i][1] not in tu:
+        #         tu[prerequisites[i][1]] = []
+        #     tu[prerequisites[i][1]].append(prerequisites[i][0])
+        # dus = [0] * numCourses
+        # for k in tu:
+        #     for val in tu[k]:
+        #         dus[val] += 1
+            
+        # print(dus)
+        # for i in range(numCourses):
+        #     index = numCourses            
+        #     for j in range(numCourses):
+        #         if dus[j] == 0:
+        #             index = j
+        #             break
+        #     if index == numCourses:
+        #         return False
+        #     dus[j] = -1
+        #     if index in tu:
+        #         for nexts in tu[index]:
+        #             dus[nexts]-=1
+        # return True
+
+    def isIsomorphic(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: bool
+        """
+        sl = len(s)
+        tl = len(t)
+        if sl != tl: return False
+        maps = {}
+        mapp = {}
+        for i in range(sl):
+            if s[i] not in maps:
+                if t[i] not in mapp:
+                    maps[s[i]] = t[i]
+                    mapp[t[i]] = 1
+                else:
+                    return False
+            else:
+                if maps[s[i]] == t[i]:
+                    pass
+                else:
+                    return False
+        return True
+
+    def solveSudoku(self, board):
+        """
+        :type board: List[List[str]]
+        :rtype: void Do not return anything, modify board in-place instead.
+        """
+        def notinSquare(i, j, c):
+            i = i - i % 3
+            j = j - j % 3
+            for m in range(3):
+                for n in range(3):
+                    if board[i+m][j+n] == c:
+                        return False
+            return True
+        def notinCol(j, c):
+            for i in range(len(board)):
+                if board[i][j] == c:
+                    return False
+            return True
+        def notinRow(i, c):
+            for chr in board[i]:
+                if chr == c:
+                    return False
+            return True
+        nums = '123456789'
+        def help(pos):
+            if pos == 81: return True
+            i = pos // 9
+            j = pos % 9
+            if board[i][j] != '.':
+                return help(pos+1)
+            else:
+                for ch in nums:
+                    if notinCol(j, ch) and notinRow(i, ch) and notinSquare(i, j, ch):
+                        tmp = board[i]
+                        board[i] = tmp[:j] + ch + tmp[j+1:]
+                        if (help(pos+1)):
+                            return True
+                        board[i] = tmp
+                return False
+        help(0)
+
+    def minWindow(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: str
+        """
+        need, missing = collections.Counter(t), len(t)
+        i = I = J = 0
+        for j, c in enumerate(s):
+            if need[c] > 0:
+                missing -= 1
+            need[c] -= 1
+            if not missing:
+                while i < j and need[s[i]] < 0:
+                    need[s[i]] += 1
+                    i += 1
+                if not J or j-i <= J-I:
+                    I, J = i, j
+        return s[I:J+1]  
+
+
+
+
+
+
+
+    def findSubstring(self, s, words):
+        """
+        :type s: str
+        :type words: List[str]
+        :rtype: List[int]
+        """
+        count = {}
+        for word in words:
+            if word not in count:
+                count[word] = 0
+            count[word] += 1
+        wordLens = len(words[0])
+        wordcount = len(words)
+        strLens = wordLens * wordcount
+        res = []
+        slens = len(s)
+        print(count)
+        for i in range(wordLens):
+            seen = {}
+            j = 0
+            m = 0
+            while j < wordcount and i+(j+m+1)*wordLens <= slens:
+                w = s[i+(j+m)*wordLens:i+(j+m+1)*wordLens]
+                if w in count:
+                    if w not in seen:
+                        seen[w] = []
+                    seen[w].append(j+m)
+                    if len(seen[w]) > count[w]:
+                        jm = seen[w][0]
+                        seen[w] = seen[w][1:]
+                        m += 1
+                        j = 0
+                        continue
+                    if j == wordcount - 1:
+                        res.append(i+m*wordLens)
+                        seen[s[i+m*wordLens:i+(m+1)*wordLens]] -= 1
+                        m += 1
+                        continue                       
+                else:
+                    m = j+m+1
+                    j = 0
+                    seen = {}
+                    continue
+                j += 1
+        return res
+        # for i in range(len(s)-strLens+1):
+        #     seen = {}
+        #     j = 0
+        #     while j < wordcount:
+        #         w = s[i+j*wordLens:i+(j+1)*wordLens]
+        #         if w in count:
+        #             if w not in seen:
+        #                 seen[w] = 0
+        #             seen[w] += 1
+        #             if seen[w] > count[w]:
+        #                 break
+        #         else:
+        #             break
+        #         j += 1
+        #     if j == wordcount:
+        #         res.append(i)
+        # return res
+            
+
+    def copyRandomList(self, head):
+        """
+        :type head: RandomListNode
+        :rtype: RandomListNode
+        """
+        maps  = {}
+        maps[None]= None
+        pre = dummyNode = RandomListNode(0)
+        t = head
+        h = head
+        while h:
+            tmp = RandomListNode(h.label)
+            maps[h] = tmp
+            pre.next = tmp
+            pre = tmp
+            h = h.next
+        df = dummyNode.next
+        while t:
+            df.random = maps[t.random]
+            t = t.next
+            df = df.next
+        return dummyNode.next
+        
+    def detectCycle(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        fast = head
+        slow = head
+        entry = head
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+            if slow == fast:
+                while slow != entry:
+                    slow = slow.next
+                    entry = entry.next
+                return entry
+        return None                
+
+    def isPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        end = len(s) - 1
+        beg = 0
+        while beg < end:
+            while beg < end and not s[beg].isalnum():
+                beg += 1
+            while beg < end and not s[end].isalnum():
+                end -= 1
+            if beg < end:
+                if s[beg].lower() == s[end].lower():
+                    beg += 1
+                    end -= 1
+                else:
+                    return False
+            else:
+                return True
+
+        return True
+    def rotateRight(self, head, k):
+        """
+        :type head: ListNode
+        :type k: int
+        :rtype: ListNode
+        """
+        if not head: return None
+        lens = 0
+        head1= head
+        while head1 and head1.next:
+            head1 = head1.next
+            lens += 1
+        lens += 1
+        head1.next = head
+        k = lens - k % lens
+        if k == lens:
+            k = 0
+        
+        while k > 0:
+            head1 = head1.next
+            k -= 1
+        res = head1.next
+        head1.next = None
+        return res  
+
+        
+
+    def maximalRectangle(self, matrix):
+        """
+        :type matrix: List[List[str]]
+        :rtype: int
+        """
+        if not matrix or not matrix[0]: return 0
+        n = len(matrix[0])
+        height = [0]* (n+1)
+        ans = 0
+
+        for row in matrix:
+            for i in xrange(n):
+                height[i] = height[i] + 1 if row[i] == '1' else 0
+            
+            stack = [-1]
+            for i in xrange(n+1):
+                while height[i] < height[stack[-1]]:
+                    h = height[stack.pop()]
+                    w = i - 1 - stack[-1]
+                    ans = max(ans, w * h)
+                stack.append(i)
+        return ans 
+
     def largestRectangleArea(self, heights):
         """
         :type heights: List[int]
@@ -22,7 +416,7 @@ class Solution(object):
         right = self.right(heights)
         res = 0
         tmp = 0
-        for i in range(heights):
+        for i in range(len(heights)):
             tmp = heights[i]*(left[i] + right[i] + 1)
             res = max(res, tmp)
         return res
@@ -32,8 +426,9 @@ class Solution(object):
         for i in range(len(heights)):
             j = i -1
             t = 0
+            tmp = heights[i]
             while j >= 0:
-                if heights[i] <= heights[j]:
+                if tmp <= heights[j]:
                     t = t + distance[j] + 1
                     j = j - distance[j] - 1
                 else:
@@ -45,18 +440,13 @@ class Solution(object):
         for i in range(len(heights)-1,-1,-1):
             t = 0
             j = i+1
+            tmp = heights[i]
             while j < len(heights):
-                if heights[i]<=heights[j]:
+                if tmp <= heights[j]:
                     t = t + distance[j] + 1
                     j = j + distance[j] + 1
                 else: 
-                    break
-                j+=1                
-            # for j in range(i+1,len(heights)):
-            #     if heights[i]<=heights[j]:
-            #         t+=1
-            #     else:
-            #         break
+                    break     
             distance[i] = t
         return distance
             
@@ -133,65 +523,211 @@ class Solution(object):
         :type wordList: List[str]
         :rtype: List[List[str]]
         """
-        def construct_dict(word_list):
-            def compare(lhs, rhs):
-                k = 0
-                for i in range(len(lhs)):
-                    if lhs[i] != rhs[i]:
-                        k+=1
-                    if k > 1:
-                        return -1
-                return k
-            d = {}
-            
-            for lhs in word_list:
-                for rhs in word_list:
-                    if compare(lhs,rhs) == 1:
-                        tmp = d.setdefault(lhs, set())
-                        tmp.add(rhs)
-                        tmp = d.setdefault(rhs, set())
-                        tmp.add(lhs)
-                        
-                # for i in range(len(word)):
-                #     s = word[:i]+"_"+word[i+1:]
-                #     d[s] = d.get(s, []) + [word]
-            return d
-        lens = 0
-        res = []
         if endWord not in wordList: return []
-        if beginWord not in wordList: wordList.append(beginWord)
+        wordlens = len(beginWord)
+        def compare(i, j):
+            count = 0
+            for k in range(wordlens):
+                if wordList[i][k] != wordList[j][k]:
+                    count += 1
+                    if count > 1:
+                        break
+            if count == 1: return True
+            return False
 
-        dict_words = construct_dict(wordList)
-
-        queue, visted = deque([(beginWord, 1,[beginWord])]), set()
-        maps ={1:set([beginWord])}
-
+        maps={}
+        endPos = wordList.index(endWord)
+        wordList.append(beginWord)
+        begPos = len(wordList) - 1
+        visted = [False] * len(wordList)
+        visted[begPos] = True
+        dicts = {}
+        for i in range(len(wordList)):
+            dicts[wordList[i]] = i
+        queue = deque([(begPos, 1)])
+        levelVisting = set([begPos])
+        endLevels = 100
+        nowLevels = 0
         l = 0
         while queue:
-            # print(queue)
-            word, steps, paths = queue.popleft()
-            if word == endWord:
-                res.append(paths)
-                lens = steps
+            pos, levels = queue.popleft()
+            if pos == endPos:
+                endLevels = levels
+
+            if levels > endLevels:
                 break
-            if l != lens:
-                for vals in maps:
-                    visted.add(vals)
-                l = lens
-            if word not in visted:
-                next_words = dict_words.get(word, [])
-                for nexts in next_words:
-                    if nexts != word and nexts not in visted:
-                        queue.append((nexts, steps+1, paths+[nexts]))
-                        tmp = maps.setdefault(steps,set())
-                        tmp.add(nexts)
-        while queue:
-            word, steps, paths = queue.popleft()
-            if steps != lens:
-                break
-            if word == endWord:
-                res.append(paths)
+
+            if l != levels:
+                for p in levelVisting:
+                    visted[p] = True
+                levelVisting = set()
+                l = levels
+
+            for k in range(wordlens):
+                for c in string.ascii_lowercase :
+                    next_words = wordList[pos][:k] + c + wordList[pos][k+1:]
+                    if next_words in dicts:
+                        i = dicts[next_words]
+                        if not visted[i]:
+                            queue.append((i, levels+1))
+                            if i not in maps: maps[i] =set()
+                            maps[i].add(pos)
+                            levelVisting.add(i)
+        #             print("1",maps)
+        #     print("       ",queue)        
+        # print("1",maps)
+
+        if endPos not in maps: return []
+        res=[]
+        def generatePath(i, Path):
+            if i == begPos:
+                res.append([wordList[p] for p in Path])
+                return
+            for p in maps[i]:
+                generatePath(p,[p]+Path)
+        generatePath(endPos, [endPos])
         return res
+
+        # if endWord not in wordList: return []
+        # wordlens = len(beginWord)
+        # def compare(i, j):
+        #     count = 0
+        #     for k in range(wordlens):
+        #         if wordList[i][k] != wordList[j][k]:
+        #             count += 1
+        #             if count > 1:
+        #                 break
+        #     if count == 1: return True
+        #     return False
+
+        # maps={}
+        # endPos = wordList.index(endWord)
+        # wordList.append(beginWord)
+        # begPos = len(wordList) - 1
+        # print(wordList)
+        # visted = [False] * len(wordList)
+        # visted[begPos] = True
+
+        # queue = deque([(begPos, 1)])
+        # levelVisting = set([begPos])
+        # endLevels = 100
+        # nowLevels = 0
+        # l = 0
+        # while queue:
+        #     pos, levels = queue.popleft()
+        #     if pos == 4:
+        #         aa=1
+        #     if pos == endPos:
+        #         endLevels = levels
+
+        #     if levels > endLevels:
+        #         break
+
+        #     if l != levels:
+        #         for p in levelVisting:
+        #             visted[p] = True
+        #         levelVisting = set()
+        #         l = levels
+        #     for i in range(len(wordList)):
+        #         if not visted[i] and compare(i, pos):
+        #             queue.append((i, levels+1))
+        #             if i not in maps: maps[i] =set()
+        #             maps[i].add(pos)
+        #             levelVisting.add(i)
+        #             print("1",maps)
+        #     print("       ",queue)        
+        # print("1",maps)
+
+        # if endPos not in maps: return []
+        # res=[]
+        # def generatePath(i, Path):
+        #     if i == begPos:
+        #         res.append([wordList[p] for p in Path])
+        #         return
+        #     for p in maps[i]:
+        #         generatePath(p,[p]+Path)
+        # generatePath(endPos, [endPos])
+        # return res
+            
+        # while queue:
+        #     # print(queue)
+        #     word, steps, paths = queue.popleft()
+        #     if word == endWord:
+        #         res.append(paths)
+        #         lens = steps
+        #         break
+        #     if l != lens:
+        #         for vals in maps:
+        #             visted.add(vals)
+        #         l = lens
+        #     if word not in visted:
+        #         next_words = dict_words.get(word, [])
+        #         for nexts in next_words:
+        #             if nexts != word and nexts not in visted:
+        #                 queue.append((nexts, steps+1, paths+[nexts]))
+        #                 tmp = maps.setdefault(steps,set())
+        #                 tmp.add(nexts)
+
+
+        # def construct_dict(word_list):
+        #     def compare(lhs, rhs):
+        #         k = 0
+        #         for i in range(len(lhs)):
+        #             if lhs[i] != rhs[i]:
+        #                 k+=1
+        #             if k > 1:
+        #                 return -1
+        #         return k
+        #     d = {}
+            
+        #     for lhs in word_list:
+        #         for rhs in word_list:
+        #             if compare(lhs,rhs) == 1:
+        #                 tmp = d.setdefault(lhs, set())
+        #                 tmp.add(rhs)
+        #                 tmp = d.setdefault(rhs, set())
+        #                 tmp.add(lhs)
+                        
+        #         # for i in range(len(word)):
+        #         #     s = word[:i]+"_"+word[i+1:]
+        #         #     d[s] = d.get(s, []) + [word]
+        #     return d
+        # lens = 0
+        # res = []
+        # if endWord not in wordList: return []
+        # if beginWord not in wordList: wordList.append(beginWord)
+
+        # dict_words = construct_dict(wordList)
+
+        # queue, visted = deque([(beginWord, 1,[beginWord])]), set()
+        # maps ={1:set([beginWord])}
+
+        # l = 0
+        # while queue:
+        #     # print(queue)
+        #     word, steps, paths = queue.popleft()
+        #     if word == endWord:
+        #         res.append(paths)
+        #         lens = steps
+        #         break
+        #     if l != lens:
+        #         for vals in maps:
+        #             visted.add(vals)
+        #         l = lens
+        #     if word not in visted:
+        #         next_words = dict_words.get(word, [])
+        #         for nexts in next_words:
+        #             if nexts != word and nexts not in visted:
+        #                 queue.append((nexts, steps+1, paths+[nexts]))
+        #                 tmp = maps.setdefault(steps,set())
+        #                 tmp.add(nexts)
+        # while queue:
+        #     word, steps, paths = queue.popleft()
+        #     if steps != lens:
+        #         break
+        #     if word == endWord:
+        #         res.append(paths)
+        # return res
 
         #tle
         # def construct_dict(word_list):
@@ -1016,6 +1552,16 @@ class Solution(object):
                 maps[i-left] = sum
                 maps[i+right] = sum
         return res
+        for i in nums:
+            if i not in maps:
+                left = maps.get(i-1,0)
+                right = maps.get(i+1,0)
+                sum = left + right + 1
+                res = max(sum, res)
+                maps[i] = sum
+                maps[i-left] = sum
+                maps[i+right] = sum
+        return res
 
     def simplifyPath(self, path):
         """
@@ -1200,6 +1746,16 @@ test = Solution()
 # l.append(l2)
 # print(test.findLadders("red","tax",["ted","tex","red","tax","tad","den","rex","pee"]))
 # print(test.findLadders("hot","dog",["hot","dog"]))
+# print(test.findLadders("hit", "cog", ["hot","dot","dog","lot","log","cog"]))
 # print(test.isScramble('abc','bca'))
 # print(test.removeDuplicateLetters("cbacdcbc"))
-print(test.left([2,3,1,4,4,2]))
+# print(test.left([2,3,1,4,4,2]))
+# print(test.findSubstring("wordgoodgoodgoodbestword",["word","good","best","good"]))
+# print(test.minWindow("ab","b"))
+# a = ["..9748...","7........",".2.1.9...","..7...24.",".64.1.59.",".98...3..","...8.3.2.","........6","...2759.."]
+# (test.solveSudoku(a))
+# print(a)
+# print(test.canFinish(2,[[1,0]]))
+# print(test.isValid('()()'))
+# print(test.isValid("()(()"))
+print(test.longestValidParentheses(")"))
