@@ -14,6 +14,22 @@ class Interval(object):
 
 
 class Solution(object):
+    def lengthOfLIS(self, nums):
+        tails = [0]*len(nums)
+        size = 0
+        for x in nums:
+            i, j = 0, size
+            while i < j:
+                mid = (i+j) // 2
+                if x > tails[mid]:
+                    i = mid + 1
+                else:
+                    j = mid
+            tails[i] = x
+            size = max(i + 1, size)
+        return size 
+
+
     def mergeKLists(self, lists):
         """
         :type lists: List[ListNode]
@@ -1777,4 +1793,4 @@ test = Solution()
 # print(test.canFinish(2,[[1,0]]))
 # print(test.isValid('()()'))
 # print(test.isValid("()(()"))
-print(test.longestValidParentheses(")"))
+print(test.lengthOfLIS([10,9,2,5,3,7,101,18]))
