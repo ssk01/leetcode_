@@ -26,6 +26,19 @@ import Queue
 #         self.next = None
 
 class Solution(object):
+    def minSubArrayLen(self, s, nums):
+        start = 0
+        minlen = 2**32-1
+        sums = 0
+        for i in range(len(nums)):
+            sums += nums[i]
+            while sums >= s:
+                tmp = i-start+1 
+                if tmp < minlen:
+                    minlen = tmp
+                sums -= nums[start]
+                start += 1
+        return minlen if minlen!= 2**32-1 else 0
     def wordBreak(self, s, wordDict):
         """
         :type s: str

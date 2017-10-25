@@ -1,6 +1,7 @@
 from collections import deque
 import string
 import collections
+from queue import PriorityQueue
 # Definition for singly-linked list.
 class ListNode(object):
     def __init__(self, x):
@@ -13,6 +14,24 @@ class Interval(object):
 
 
 class Solution(object):
+    def mergeKLists(self, lists):
+        """
+        :type lists: List[ListNode]
+        :rtype: ListNode
+        """
+        dummyNode = ListNode(0)
+        curr = dummyNode
+        q = PriorityQueue()
+        for node in lists:
+            if node:
+                q.put((node.val, node))
+        while q.qsize() > 0:
+            curr.next = q.get()[1]
+            curr = curr.next
+            if curr.next:
+                q.put((curr.next.val, curr.next))
+        return dummyNode.next
+
     def longestValidParentheses(self, s):
         """
         :type s: str
