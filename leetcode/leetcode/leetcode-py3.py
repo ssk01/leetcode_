@@ -14,6 +14,150 @@ class Interval(object):
 
 
 class Solution(object):
+    def validPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        i = 0 
+        j = len(s)-1
+        def isP(m, n):
+            a = s[m:n+1]
+            return  a[::-1] == a
+        
+        while s[i] == s[j] and i < j:
+            i+=1
+            j-=1
+        if i>=j:
+            return True
+        
+        return isP(i+1, j) or isP(i, j-1)
+    def longestPalindromeSubseq(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        if s == s[::-1]:
+            return len(s)
+
+        n = len(s)
+        dp = [0 for j in range(n)]
+        newdp = [1 for j in range(n)]
+        dp[n-1] = 1
+
+        for i in range(n-1, -1, -1):   # can actually start with n-2...
+            #newdp = dp[:]
+            for k in range(i+1, n):
+                newdp[k]=dp[k]
+            #newdp[i] = 1
+            for j in range(i+1, n):
+                if s[i] == s[j]:
+                    newdp[j] = 2 + dp[j-1]
+                else:
+                    newdp[j] = max(dp[j], newdp[j-1])
+            for k in range(i, n):
+                dp[k] = newdp[k]
+                    
+        return dp[n-1]
+    def palindromePairs(self, words):
+        """
+        :type words: List[str]
+        :rtype: List[List[int]]
+        """
+        maps = dict([(w[::-1], i) for i, w in enumerate(words)])
+        res = []
+        for j, w in enumerate(words):
+            for i in range(len(w)):
+                pre = w[:i]
+                post = w[i:]
+                if pre in maps and maps[pre] != j and post == post[::-1]:
+                    res.append([j, maps[pre]])
+                if post in maps and maps[post] != j and pre == pre[::-1]:
+                    res.append([maps[post], j])
+        return res
+    def minCut(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        cut = [1086 for x in range(len(s))]
+        for i in range(len(s)):
+            # odd
+            j = 0
+            while i-j>=0 and i+j<len(s) and s[i+j] == s[i-j]:
+                if i-j == 0:
+                    cut[i+j] = 0
+                else:
+                    cut[i+j] = min(cut[i+j], cut[i-j-1]+1)
+                j+=1
+            # even
+            # if i+1 < s[i] == s[i+1]:
+            j = 0
+            while i-j>=0 and i+j+1<len(s) and s[i-j] == s[i+j+1]:
+                if i-j == 0:
+                    cut[i+j+1] = 0
+                else:
+                    cut[i+j+1] = min(cut[i+j+1], cut[i-j-1]+1)
+                j+=1
+
+        return cut[len(s)-1]
+
+    def isp(self, s, i, j):
+        while j>i:
+            if s[j] ==s[i]:
+                j-=1
+                i+=1
+            else:
+                return 0
+        return 1
+        # return  min(res)-1
+    # def minCut1(self, s):
+    #         """
+    #     :type s: str
+    #     :rtype: int
+    #     """
+    #     res =[]
+    #     lens = len(s)
+    #     def fuckhel( idx, tmp):
+ 
+    #         if idx == lens: 
+    #             res.append(len(tmp))
+    #             return
+    #         for i in range(idx, lens):
+    #             if idx > 0:
+    #                 if s[idx:i+1] == s[i:idx-1:-1]: 
+    #                     tmp.append(1)
+    #                     fuckhel(i+1,tmp)
+    #                     tmp.pop()
+    #             elif idx == 0 and s[idx:i+1] == s[i::-1]: 
+    #                 tmp.append(1)
+    #                 fuckhel(i+1,tmp)
+    #                 tmp.pop()
+    #     fuckhel(0,[])
+    #     return  min(res)-1
+    def shortestPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        i = 0
+        # j = len(s1)-1
+        end = 0
+        for j in range(len(s)-1, -1,-1):
+            i = 0
+            while j > i:
+                if s[i] == s[j]:
+                    i+=1
+                    j-=1
+                else:
+                    break
+            if j==i:
+                end = 2*i
+                break
+            if j == i-1:
+                end = 2*j+1
+                break
+        return s[end+1:][::-1] + s
     def lengthOfLIS(self, nums):
         tails = [0]*len(nums)
         size = 0
@@ -1793,4 +1937,12 @@ test = Solution()
 # print(test.canFinish(2,[[1,0]]))
 # print(test.isValid('()()'))
 # print(test.isValid("()(()"))
-print(test.lengthOfLIS([10,9,2,5,3,7,101,18]))
+# print(test.lengthOfLIS([10,9,2,5,3,7,101,18]))
+# print(test.shortestPalindrome('aacecaaa'))
+# print(test.shortestPalindrome('abcd'))
+# print(test.shortestPalindrome('aac'))
+# print(test.shortestPalindrome('ac'))
+# print(test.shortestPalindrome('abbacd'))
+print(test.palindromePairs(["abcd","dcba","lls","s","sssll"]))
+# abcd
+# ""
