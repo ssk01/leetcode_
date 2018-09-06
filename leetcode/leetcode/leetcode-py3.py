@@ -1,6 +1,7 @@
 from collections import deque
 import string
 import collections
+import json
 from queue import PriorityQueue
 # Definition for singly-linked list.
 class ListNode(object):
@@ -12,8 +13,110 @@ class Interval(object):
         self.start = s
         self.end = e
 
+def stringToIntegerList(input):
+    return json.loads(input)
 
+def stringToListNode(input):
+    # Generate list from the input
+    numbers = stringToIntegerList(input)
+
+    # Now convert that list into linked list
+    dummyRoot = ListNode(0)
+    ptr = dummyRoot
+    for number in numbers:
+        ptr.next = ListNode(number)
+        ptr = ptr.next
+
+    ptr = dummyRoot.next
+    return ptr
+class Trie:
+    
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.dicts = {}
+        self.end = False
+
+    def insert(self, word):
+        """
+        Inserts a word into the trie.
+        :type word: str
+        :rtype: void
+        """
+        if not word:
+            self.end = True
+        else:
+            c = word[0]
+            if c not in self.dicts:
+                self.dicts[c] = Trie()
+            self.dicts[c].insert(word[1:])
+
+    def search(self, word):
+        """
+        Returns if the word is in the trie.
+        :type word: str
+        :rtype: bool
+        """
+        if not word:
+            return self.end
+        c = word[0]
+        if c not in self.dicts:
+            return False
+        else:
+            return self.dicts[c].search(word[1:])
+
+    def startsWith(self, prefix):
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        :type prefix: str
+        :rtype: bool
+        """
+        if not prefix:
+            return self.end or (len(self.dicts) != 0)
+        c = prefix[0]
+        if c in self.dicts:
+            return self.dicts[c].startsWith(prefix[1:])
+        else:
+            return False
 class Solution(object):
+    def isPalindrome1(self, head):
+        """
+        :type head: ListNode
+        :rtype: bool
+        """
+        slow, fast = head, head
+        fastPrev = None
+        while fast and fast.next:
+            slow = slow.next
+            fastPrev = fast.next
+            fast = fast.next.next
+        end = fast
+        if not fast:
+            end = fastPrev
+        def rev(b, e):
+            # if b == e: return e
+            # cur = b.next
+            cur = b
+            prev = None
+            while cur != e:
+                nex = cur.next
+                cur.next = prev
+                prev = cur 
+                cur = nex
+            cur.next = prev
+            return e
+        nHead= rev(slow, end)
+        result = True
+        while nHead and head:
+            if nHead.val == head.val:
+                nHead = nHead.next
+                head = head.next
+            else:
+                result = False
+                break
+        rev(end, slow)
+        return result
     def validPalindrome(self, s):
         """
         :type s: str
@@ -1943,6 +2046,55 @@ test = Solution()
 # print(test.shortestPalindrome('aac'))
 # print(test.shortestPalindrome('ac'))
 # print(test.shortestPalindrome('abbacd'))
-print(test.palindromePairs(["abcd","dcba","lls","s","sssll"]))
+# print(test.palindromePairs(["abcd","dcba","lls","s","sssll"]))
 # abcd
 # ""
+def quanpaixu(a):
+    if len(a) == 0:
+        return [[]]
+    res = []
+    for i in range(len(a)):
+        rest = quanpaixu(a[:i]+a[i+1:])
+        res+=([[a[i]] + r for r in rest])
+    return res
+    # return [ [ a[i]+ ] ]
+print(quanpaixu([1,2,3,4]))
+# def qsort(a, i, j):
+#     if j <= i+1: return 
+#     midValue = a[i]
+#     beg = i+1
+#     end = j
+#     while beg < end:
+#         if a[beg] < midValue:
+#             beg+=1
+#         else:
+#             end-=1
+#             a[beg], a[end] = a[end], a[beg]
+#     # if a[beg] > a[end]
+#     a[i], a[beg-1] = a[beg-1], a[i]
+#     qsort(a, i, beg-1)
+#     qsort(a, beg, j)
+# import random
+# test1 = [random.randint(1, 1000) for _ in range(100)]
+# sortednum = test1
+# print(test1)
+# qsort(test1 ,0, len(test1))
+# print(test1)
+# if test1 == sortednum:
+#     print('ojbk')
+        
+# head = stringToListNode('[1,2,1]');
+# ret = Solution().isPalindrome1(head)
+# print(ret)
+# head = stringToListNode('[1,2,2,1]');
+# ret = Solution().isPalindrome1(head)
+# print(ret)
+# head = stringToListNode('[1,2,3,1]');
+# ret = Solution().isPalindrome1(head)
+# print(ret)
+# head = stringToListNode('[1,2,3]');
+# ret = Solution().isPalindrome1(head)
+# print(ret)
+# head = stringToListNode('[1]');
+# ret = Solution().isPalindrome1(head)
+# print(ret)
