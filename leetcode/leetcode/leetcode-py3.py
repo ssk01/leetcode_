@@ -2018,6 +2018,7 @@ class Node:
     def __init__(self, key, val):
         self.val = val
         self.key = key
+        self.count = 0
         self.prev = None
         self.next = None
     def insertBefore(self, node):
@@ -2028,8 +2029,103 @@ class Node:
     def delself(self):
         self.prev.next = self.next
         self.next.prev = self.prev
-class LRUCache:
+# class List:
+#     def __init__(self):
+#         self.head = Node(1,1)
+#         self.tail = Node(1,1)
+#         self.head.next = self.tail
+#         self.tail.prev = self.head
 
+class Node:
+    def __init__(self, key, val):
+        self.val = val
+        self.key = key
+        self.count = 0
+        self.prev = None
+        self.next = None
+    def insertBefore(self, node):
+        self.prev = node.prev
+        node.prev.next = self
+        self.next = node
+        node.prev = self
+    def delself(self):
+        self.prev.next = self.next
+        self.next.prev = self.prev
+class List:
+    def __init__(self):
+        self.head = Node(1,1)
+        self.tail = Node(1,1)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+class LFUCache:
+    
+    def __init__(self, capacity):
+        """
+        :type capacity: int
+        """
+        self.keyDict = {}
+        self.countListDict = {0:List()}
+        self.capacity = capacity
+        self.min = 0
+    def get(self, key):
+        """
+        :type key: int
+        :rtype: int
+        """
+        if key in self.keyDict:
+            node = self.keyDict[key]
+            node.delself()
+            if node.count == self.min:
+                list_ = self.countListDict[node.count]
+                if list_.head.next == list_.tail:
+                    self.min = node.count+1
+            node.count+=1
+            if node.count not in self.countListDict:
+                self.countListDict[node.count] = List()
+            node.insertBefore(self.countListDict[node.count].tail)
+            return node.val
+        else:
+            return -1
+
+    def put(self, key, value):
+        """
+        :type key: int
+        :type value: int
+        :rtype: void
+        """
+        if len(self.keyDict) == self.capacity:
+            #self.countListDict[self.min].head.next.delself()
+            if self.capacity == 0:
+                return
+            node = self.countListDict[self.min].head.next
+            assert(node != self.countListDict[self.min].tail)    
+            node.delself()
+            del self.keyDict[node.key]
+        if key in self.keyDict:
+            node = self.keyDict[key]
+            node.delself()
+            node.val = value
+        # node = Node(key, value)
+        else:
+            node = Node(key, value)
+            self.keyDict[key] = node
+        if node.count == 0:
+            self.min = 1
+        if node.count == self.min:
+            list_ = self.countListDict[node.count]
+            if list_.head.next == list_.tail:
+                self.min = node.count+1
+        node.count+=1
+        if node.count not in self.countListDict:
+            self.countListDict[node.count] = List()
+        node.insertBefore(self.countListDict[node.count].tail)
+
+
+            
+
+class LRUCache:
+    
     def __init__(self, capacity):
         """
         :type capacity: int
@@ -2050,13 +2146,6 @@ class LRUCache:
             node = self.maps[key]
             node.delself()
             node.insertBefore(self.tail)
-            # node.prev.next = node.next
-            # node.next.prev = node.prev
-
-            # node.prev = self.tail.prev
-            # self.tail.prev.next = node
-            # node.next = self.tail
-            # self.tail.prev = node
             return node.val
         else:
             return -1
@@ -2066,17 +2155,26 @@ class LRUCache:
         :type value: int
         :rtype: void
         """
+        if key in self.maps:
+            self.maps[key].delself()
         node = Node(key, value)
         self.maps[key] = node
+        # node.delself()
+        node.insertBefore(self.tail)
 
         if len(self.maps) > self.capacity:
             deleted = self.beg.next
-            self.beg.next = self.beg.next.next
-            self.beg.next.prev = self.beg
+            deleted.delself()
             del self.maps[deleted.key]
-
-
-
+input0 =        ["LFUCache","get","put","get","put","put","get","get"]
+input1 = [[2],[2],[2,6],[1],[1,5],[1,2],[1],[2]]
+# input0 = ["LFUCache","put","put","get","put","get","get","put","get","get","get"]
+# input1 = [[2],[1,1],[2,2],[1],[3,3],[2],[3],[4,4],[1],[3],[4]]
+class_ = globals()[input0[0]]
+instance = class_(input1[0])
+for i in range(1,len(input1)):
+    print(getattr(instance, input0[i])(*input1[i]))
+# print(instance.get(2))
 # Your LRUCache object will be instantiated and called as such:
 # obj = LRUCache(capacity)
 # param_1 = obj.get(key)
@@ -2086,7 +2184,7 @@ class LRUCache:
 # obj = WordDictionary()
 # obj.addWord(word)
 # param_2 = obj.search(word)
-test = Solution()
+# test = Solution()
 # rr = Interval(2,5)
 # l1 = Interval(1,3)
 # l2 = Interval(6,9)
@@ -2125,7 +2223,7 @@ def quanpaixu(a):
         res+=([[a[i]] + r for r in rest])
     return res
     # return [ [ a[i]+ ] ]
-print(quanpaixu([1,2,3,4]))
+# print(quanpaixu([1,2,3,4]))
 # def qsort(a, i, j):
 #     if j <= i+1: return 
 #     midValue = a[i]
