@@ -2014,6 +2014,73 @@ class WordDictionary(object):
                 
         
 
+class Node:
+    def __init__(self, key, val):
+        self.val = val
+        self.key = key
+        self.prev = None
+        self.next = None
+    def insertBefore(self, node):
+        self.prev = node.prev
+        node.prev.next = self
+        self.next = node
+        node.prev = self
+    def delself(self):
+        self.prev.next = self.next
+        self.next.prev = self.prev
+class LRUCache:
+
+    def __init__(self, capacity):
+        """
+        :type capacity: int
+        """
+        self.maps = {}
+        self.capacity = capacity
+        self.beg = Node(0, 0)
+        self.tail = Node(0, 0)
+        self.beg.next = self.tail
+        self.tail.prev = self.beg
+
+    def get(self, key):
+        """
+        :type key: int
+        :rtype: int
+        """
+        if key in self.maps:
+            node = self.maps[key]
+            node.delself()
+            node.insertBefore(self.tail)
+            # node.prev.next = node.next
+            # node.next.prev = node.prev
+
+            # node.prev = self.tail.prev
+            # self.tail.prev.next = node
+            # node.next = self.tail
+            # self.tail.prev = node
+            return node.val
+        else:
+            return -1
+    def put(self, key, value):
+        """
+        :type key: int
+        :type value: int
+        :rtype: void
+        """
+        node = Node(key, value)
+        self.maps[key] = node
+
+        if len(self.maps) > self.capacity:
+            deleted = self.beg.next
+            self.beg.next = self.beg.next.next
+            self.beg.next.prev = self.beg
+            del self.maps[deleted.key]
+
+
+
+# Your LRUCache object will be instantiated and called as such:
+# obj = LRUCache(capacity)
+# param_1 = obj.get(key)
+# obj.put(key,value)
 
 # Your WordDictionary object will be instantiated and called as such:
 # obj = WordDictionary()
